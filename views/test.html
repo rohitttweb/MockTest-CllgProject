@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #questions {
+            display: flex;
+            flex-direction: column;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        #questions>button {
+            background-color: gray;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            margin-top: 30px;
+
+        }
+
+        .question {
+            display: none;
+        }
+
+        .question.active {
+            display: block;
+        }
+
+        .question>h2 {
+            font-size: 40px;
+            color: rgb(165, 119, 59);
+        }
+
+        .question>p {
+            font-size: 20px;
+            border: 1px solid black;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .question>button {
+            background-color: gray;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-top: 10px;
+
+        }
+
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .options {
+            padding: 10px;
+        }
+
+        .options-box {
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .options label {
+            font-size: 20px;
+            margin: 10px;
+        }
+
+        .options input[type="radio"]:checked+label {
+            font-weight: bold;
+            color: blue;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="questions"></div>
+    <div id="score"></div>
+    <div id="results"></div>
+
+    <script>
+        const questionsContainer = document.querySelector('#questions');
+        let currentQuestion = 0;
+
+        fetch('/questions').then(response => response.json()).then(data => {
+            console.log(data)
+            const correct_ans = {}
+            data.questions.forEach((question, index) => {
+
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.id = `question${index + 1}`;
+
+                const questionTitle = document.createElement('h2');
+                questionTitle.textContent = `Question ${index + 1}`;
+
+                const questionText = document.createElement('p');
+                questionText.textContent = question.question;
+
+                const optionsContainer = document.createElement('div');
+                optionsContainer.classList.add("options")
+
+                question.options.forEach((option, x) => {
+                    if (option == question.ans) {
+                        correct_ans[`question${index + 1}`] = question.ans
+                    }
+                    const box = document.createElement('div')
+                    box.classList.add('options-box')
+                    const optionInput = document.createElement('input');
+                    optionInput.type = 'radio';
+                    optionInput.name = `question${index + 1}`;
+                    optionInput.value = option
+
+                    const optionLabel = document.createElement('label');
+                    optionLabel.textContent = option;
+                    box.append(optionInput)
+                    box.append(optionLabel)
+
+                    box.append(document.createElement('br'));
+                    optionsContainer.appendChild(box)
+                });
+
+                questionDiv.appendChild(questionTitle);
+                questionDiv.appendChild(questionText);
+                questionDiv.appendChild(optionsContainer);
+
+
+
+                if (index > 0) {
+                    const prevButton = document.createElement('button');
+                    prevButton.id = `prev${index + 1}`;
+                    prevButton.textContent = 'Prev';
+                    prevButton.addEventListener('click', function () {
+                        questionDiv.classList.remove('active');
+                        currentQuestion--;
+                        questionsContainer.children[currentQuestion].classList.add('active');
+                    });
+                    questionDiv.appendChild(prevButton);
+                }
+
+                if (index < data.questions.length - 1) {
+                    const nextButton = document.createElement('button');
+                    nextButton.id = `next${index + 1}`;
+                    nextButton.textContent = 'Next';
+                    nextButton.addEventListener('click', function () {
+                        questionDiv.classList.remove('active');
+                        currentQuestion++;
+                        questionsContainer.children[currentQuestion].classList.add('active');
+                    });
+                    questionDiv.appendChild(nextButton);
+                }
+
+                questionsContainer.appendChild(questionDiv);
+            });
+
+            questionsContainer.children[0].classList.add('active');
+
+            const submitButton = document.createElement('button');
+            submitButton.id = 'submit';
+            submitButton.textContent = 'Submit';
+
+            questionsContainer.appendChild(submitButton);
+
+
+            submitButton.addEventListener('click', function (e) {
+                
+                
+                e.preventDefault();
+                questionsContainer.children[currentQuestion].classList.remove('active');
+
+
+                const answers = {};
+                const inputs = document.querySelectorAll('input[type="radio"]:checked');
+                for (const input of inputs) {
+                    answers[input.name] = input.value;
+                }
+                console.log(answers)
+                console.log(correct_ans)
+
+                let correctAnswers = 0;
+
+                for (const question in correct_ans) {
+                    const resultsElement = document.querySelector('#results');
+
+                    const questionElement = document.createElement('div');
+                    questionElement.setAttribute('data-question', `${question}`);
+                    questionElement.innerHTML = '';
+                    resultsElement.appendChild(questionElement);
+
+                    const answerElement = document.querySelector(`[data-question="${question}"]`);
+
+                    if (correct_ans[question] === answers[question]) {
+                        answerElement.innerHTML = `${question}: Correct, correct-ans:  ${correct_ans[question]}`;
+                        answerElement.style.color = 'green';
+                        correctAnswers++;
+                    } else if (answers[question] == undefined) {
+                        answerElement.innerHTML = `${question}: Unattempted,  correct-ans: ${correct_ans[question]}`;
+                        answerElement.style.color = 'grey';
+                    } else {
+                        answerElement.innerHTML = `${question}: Incorrect,  correct-ans:  ${correct_ans[question]}`;
+                        answerElement.style.color = 'red';
+                    }
+                }
+                const resultsElement = document.querySelector('#score');
+                resultsElement.innerHTML = `Number of correct answers: ${correctAnswers}`;
+                submitButton.style.display = 'none'
+            });
+
+        });
+
+
+    </script>
+</body>
+
+</html>
