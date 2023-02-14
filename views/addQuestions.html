@@ -33,7 +33,7 @@
                         width: 100%;
                         padding: 10px;
                         font-size: 18px;
-                        background-color: blue;
+                        background-color: grey;
                         color: white;
                         border: none;
                         cursor: pointer;
@@ -91,12 +91,67 @@
                 <br><br>
 
                 <label>Correct Answer</label>
-                <input id="correct_ans" type="text" name="correct_ans" required>
+                <input placeholder="Correct Answer must be from above 4 options" id="correct_ans" type="text"
+                        name="correct_ans" required>
                 <br>
                 <br>
+                <label for="main-topic">Choose Category:</label><br><br>
+                <select id="main-topic">
+                        <option value="">Chosse Topic</option>
+                        <option value="aptitude">Aptitude</option>
+                        <option value="verbal">Verbal</option>
+                        <option value="reasoning">Reasoning</option>
+                        <option value="general_awareness">General Awareness</option>
+                </select>
+
+                <select id="sub-topic">
+                </select>
+
                 <button id="Submit" type="submit">Submit</button>
         </div>
         <script>
+                const subTopics = {
+                        0: [],
+                        aptitude: [
+                                "Percentages",
+                                "Profit and Loss",
+                                "Ratios and Proportions",
+                                "Simple Interest and Compound Interest"
+                        ],
+                        verbal: [
+                                "Reading Comprehension",
+                                "Verbal Reasoning",
+                                "Vocabulary"
+                        ],
+                        reasoning: [
+                                "Direction Sense Test",
+                                "Blood Relations",
+                                "Coding-Decoding",
+                                "Alphabet Test"
+                        ],
+                        general_awareness: [
+                                "History",
+                                "Geography",
+                                "Science",
+                                "Economics"
+                        ]
+                };
+                const mainTopic = document.getElementById("main-topic");
+                const subTopic = document.getElementById("sub-topic");
+
+                mainTopic.addEventListener("change", function () {
+                        const selectedValue = this.value;
+                        const SelectOptions = subTopics[selectedValue];
+                        console.log(SelectOptions)
+                        subTopic.innerHTML = "";
+                        for (let i = 0; i < SelectOptions.length; i++) {
+                                const option = document.createElement("option");
+                                option.value = SelectOptions[i];
+                                option.textContent = SelectOptions[i];
+                                subTopic.appendChild(option);
+                        }
+                });
+
                 function showToast(message, duration) {
                         var toast = document.createElement("div");
                         toast.classList.add("toast");
@@ -109,7 +164,10 @@
                         }, duration);
                 }
 
-                
+
+                function formatString(str) {
+                        return str.replace(/ +(?= )/g, '').trim();
+                }
 
                 const Submit = document.getElementById("Submit");
 
@@ -121,10 +179,10 @@
                         const option3 = document.getElementById('option3')
                         const option4 = document.getElementById('option4')
                         const correct_ans = document.getElementById('correct_ans')
-                        const options = [option1.value, option2.value, option3.value, option4.value]
+                        const options = [formatString(option1.value), formatString(option2.value), formatString(option3.value), formatString(option4.value)]
 
 
-                        if (!Question.value || !option1.value || !option2.value || !option3.value || !option4.value || !correct_ans.value) {
+                        if (!Question.value || !option1.value || !option2.value || !option3.value || !option4.value || !correct_ans.value || !mainTopic.value || !subTopic.value) {
                                 alert("Please fill in all fields");
                                 return;
                         }
@@ -139,23 +197,44 @@
                                         'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({
-                                        question: Question.value,
+                                        question: formatString(Question.value),
                                         options: options,
-                                        correct_ans: correct_ans.value
+                                        correct_ans: formatString(correct_ans.value),
+                                        mainTopic: mainTopic.value,
+                                        subTopic: subTopic.value
                                 })
                         }).then(response => response.json()).then(data => {
                                 console.log(data);
-                                showToast(data, 3000);
+                                showToast("Question Added", 5000);
                                 Question.value = ''
                                 option1.value = ''
                                 option2.value = ''
                                 option3.value = ''
                                 option4.value = ''
                                 correct_ans.value = ''
+                                mainTopic.selectedIndex = 0
+                                while (subTopic.firstChild) {
+                                        subTopic.removeChild(subTopic.firstChild);
+                                }
+                                const form = document.getElementById('question-form')
+                                form.style.display = 'none'
+                                var button = document.createElement("button");
+                                button.innerHTML = "Click me";
+
+                                // Add an event listener for the button click
+                                button.addEventListener("click", function () {
+                                        form.style.display = 'block'
+                                        button.remove()
+                                });
+
+                                // Append the button to the body of the page
+                                document.body.appendChild(button);
+
                         }).catch(error => {
                                 console.error('Error:', error);
                         });
                 });
+                
         </script>
 </body>
 

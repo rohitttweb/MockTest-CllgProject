@@ -24,6 +24,7 @@
             cursor: pointer;
             margin-top: 30px;
 
+
         }
 
         .question {
@@ -49,6 +50,7 @@
         .question>button {
             background-color: gray;
             color: white;
+
             padding: 10px 20px;
             border-radius: 5px;
             border: none;
@@ -80,22 +82,54 @@
             font-weight: bold;
             color: blue;
         }
+
+        #timer {
+            position: absolute;
+            left: 50%;
+
+            transform: translateX(-50%);
+            font-size: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 
 <body>
+    <div id="timer">
+        <span id="minutes"></span>:<span id="seconds"></span>
+    </div>
     <div id="questions"></div>
     <div id="score"></div>
     <div id="results"></div>
 
     <script>
+        const minutesSpan = document.querySelector('#minutes');
+        const secondsSpan = document.querySelector('#seconds');
+        let totalSeconds = 3600;
+        const countDown = () => {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+
+            minutesSpan.textContent = minutes < 10 ? '0' + minutes : minutes;
+            secondsSpan.textContent = seconds < 10 ? '0' + seconds : seconds;
+
+            if (--totalSeconds < 0) {
+                clearInterval(counterInterval);
+                const btn = document.getElementById('submit')
+                btn.click()
+            }
+        };
+        const counterInterval = setInterval(countDown, 1000);
+
+        
         const questionsContainer = document.querySelector('#questions');
         let currentQuestion = 0;
+        fetch('/api/questions').then(response => response.json()).then((data) => {
 
-        fetch('/api/questions').then(response => response.json()).then(data => {
-            console.log(data)
             const correct_ans = {}
-            data.questions.forEach((question, index) => {
+            data.data.forEach((question, index) => {
+
+                correct_ans[`question${index + 1}`] = question.ans
 
                 const questionDiv = document.createElement('div');
                 questionDiv.classList.add('question');
@@ -105,36 +139,33 @@
                 questionTitle.textContent = `Question ${index + 1}`;
 
                 const questionText = document.createElement('p');
-                questionText.textContent = question.question;
+                questionText.innerHTML = `${question.question.replace(/\n/g, '<br>')}`;
 
                 const optionsContainer = document.createElement('div');
                 optionsContainer.classList.add("options")
+                question.options.forEach((option) => {
 
-                question.options.forEach((option, x) => {
-                    if (option == question.ans) {
-                        correct_ans[`question${index + 1}`] = question.ans
-                    }
                     const box = document.createElement('div')
                     box.classList.add('options-box')
+
                     const optionInput = document.createElement('input');
                     optionInput.type = 'radio';
                     optionInput.name = `question${index + 1}`;
                     optionInput.value = option
-
+ 
                     const optionLabel = document.createElement('label');
                     optionLabel.textContent = option;
-                    box.append(optionInput)
-                    box.append(optionLabel)
 
-                    box.append(document.createElement('br'));
+                    box.appendChild(optionInput)
+                    box.appendChild(optionLabel)
+                    box.appendChild(document.createElement('br'));
+
                     optionsContainer.appendChild(box)
                 });
 
                 questionDiv.appendChild(questionTitle);
                 questionDiv.appendChild(questionText);
                 questionDiv.appendChild(optionsContainer);
-
-
 
                 if (index > 0) {
                     const prevButton = document.createElement('button');
@@ -148,7 +179,7 @@
                     questionDiv.appendChild(prevButton);
                 }
 
-                if (index < data.questions.length - 1) {
+                if (index < data.data.length - 1) {
                     const nextButton = document.createElement('button');
                     nextButton.id = `next${index + 1}`;
                     nextButton.textContent = 'Next';
@@ -168,14 +199,16 @@
             const submitButton = document.createElement('button');
             submitButton.id = 'submit';
             submitButton.textContent = 'Submit';
-
             questionsContainer.appendChild(submitButton);
 
-
             submitButton.addEventListener('click', function (e) {
-                
-                
                 e.preventDefault();
+
+                clearInterval(counterInterval)
+
+                minutesSpan.textContent = 0
+                secondsSpan.textContent = 0
+
                 questionsContainer.children[currentQuestion].classList.remove('active');
 
 
@@ -184,8 +217,6 @@
                 for (const input of inputs) {
                     answers[input.name] = input.value;
                 }
-                console.log(answers)
-                console.log(correct_ans)
 
                 let correctAnswers = 0;
 
@@ -218,7 +249,9 @@
 
         });
 
-
+        window.onbeforeunload = function () {
+            return "Are you sure you want to leave this page?";
+        };
     </script>
 </body>
 

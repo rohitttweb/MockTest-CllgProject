@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
-const Questions = {
+const Questionss = {
 
     "questions": [
         {
@@ -72,24 +72,51 @@ const connection = mysql.createConnection({
 });
 
 
-const addDataToSQL = (question, options, correct_ans) => {
-    connection.connect();
-    const sql = `INSERT INTO question_bank_temp (question, option1, option2, option3, option4, correct_ans) VALUES (?, ?, ?, ?, ?, ?)`;
-    connection.query(sql, [question, options[0], options[1],options[2],options[3], correct_ans], function (error, results, fields) {
+const addDataToSQL = (question, options, correct_ans, maintopic, subtopic) => {
+    const sql = `INSERT INTO question_bank_temp (question, option1, option2, option3, option4, correct_ans, maintopic, subtopic) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    connection.query(sql, [question, options[0], options[1], options[2], options[3], correct_ans, maintopic, subtopic], function (error, results, fields) {
         if (error) throw error;
         console.log("Data added successfully");
     });
-    connection.end();
 };
 
 
 app.get('/api/questions', function (req, res) {
-    res.send(Questions)
+    connection.query('SELECT * FROM question_bank_temp', function (error, results, fields) {
+        if (error) {
+            res.send({
+                'code': 400,
+                'failed': 'Error occurred while fetching data'
+            })
+        } else {
+            console.log(results)
+            const Questions = []
+            results.forEach(result => {
+                const item = {
+                    "id": result.id,
+                    "question": result.question,
+                    "options": [
+                        result.option1,
+                        result.option2,
+                        result.option3,
+                        result.option4,   
+                    ],
+                    'ans': result.correct_ans
+                }
+                Questions.push(item)
+            });
+            res.send({
+               'code': 200,
+               'success': 'Data fetched successfully',
+               'data': Questions
+             })
+        }
+    });
 })
 app.post('/api/add', function (req, res) {
     console.log(req.body)
-    const {question, options, correct_ans} = req.body
-    //addDataToSQL(question, options, correct_ans)
+    const { question, options, correct_ans, mainTopic, subTopic } = req.body
+    //addDataToSQL(question, options, correct_ans, mainTopic, subTopic)
     res.status(200).json({ status: 'success' });
 })
 app.get('/add', function (req, res) {
@@ -97,6 +124,9 @@ app.get('/add', function (req, res) {
 })
 app.get('/test', function (req, res) {
     res.sendFile('views/test.html', { root: __dirname })
+})
+app.get('/', function (req, res) {
+    res.sendFile('views/index.html', { root: __dirname })
 })
 
 app.listen(3000)
