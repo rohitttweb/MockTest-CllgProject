@@ -121,7 +121,7 @@
         };
         const counterInterval = setInterval(countDown, 1000);
 
-        
+
         const questionsContainer = document.querySelector('#questions');
         let currentQuestion = 0;
         fetch('/api/questions').then(response => response.json()).then((data) => {
@@ -152,7 +152,7 @@
                     optionInput.type = 'radio';
                     optionInput.name = `question${index + 1}`;
                     optionInput.value = option
- 
+
                     const optionLabel = document.createElement('label');
                     optionLabel.textContent = option;
 
@@ -252,6 +252,11 @@
         window.onbeforeunload = function () {
             return "Are you sure you want to leave this page?";
         };
+        window.addEventListener("blur", function () {
+            alert("You are not allowed to leave page blah blah");
+            const btn = document.getElementById('submit')
+            btn.click()
+        });
     </script>
 </body>
 
