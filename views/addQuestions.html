@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <style>
+                #question-form {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        text-align: left;
+                        padding: 20px;
+                }
+
+                p {
+                        font-size: 18px;
+                        margin-top: 20px;
+                }
+
+                input[type="text"] {
+                        width: 100%;
+                        padding: 10px;
+                        font-size: 16px;
+                        margin-top: 10px;
+                        margin-bottom: 20px;
+                        border: 1px solid lightgray;
+                        box-sizing: border-box;
+                }
+
+                button[type="submit"] {
+                        width: 100%;
+                        padding: 10px;
+                        font-size: 18px;
+                        background-color: blue;
+                        color: white;
+                        border: none;
+                        cursor: pointer;
+                        margin-top: 20px;
+                }
+
+                #question-area {
+                        max-width: 600px;
+                        padding: 10px;
+                        font-size: 16px;
+
+
+                }
+
+                #toast-container {
+                        position: fixed;
+                        top: 10px;
+                        right: 10px;
+                        width: 300px;
+                        z-index: 1;
+                }
+
+                .toast {
+                        background-color: #333;
+                        color: #fff;
+                        font-size: 14px;
+                        padding: 10px;
+                        border-radius: 5px;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                        position: relative;
+                        margin-bottom: 10px;
+                }
+        </style>
+</head>
+
+<body>
+        <div id="toast-container"></div>
+
+        <div id="question-form">
+                <p>Enter a question:</p>
+                <textarea id="question-area" name="question" required></textarea>
+                <br>
+                <p>Enter the options:</p>
+                <label>Option 1</label>
+                <input id="option1" type="text" name="option1" required>
+                <br>
+                <label>Option 2</label>
+                <input id="option2" type="text" name="option2" required>
+                <br>
+                <label>Option 3</label>
+                <input id="option3" type="text" name="option3" required>
+                <br>
+                <label>Option 4</label>
+                <input id="option4" type="text" name="option4" required>
+                <br><br>
+
+                <label>Correct Answer</label>
+                <input id="correct_ans" type="text" name="correct_ans" required>
+                <br>
+                <br>
+                <button id="Submit" type="submit">Submit</button>
+        </div>
+        <script>
+                function showToast(message, duration) {
+                        var toast = document.createElement("div");
+                        toast.classList.add("toast");
+                        toast.innerHTML = message;
+
+                        document.getElementById("toast-container").appendChild(toast);
+
+                        setTimeout(function () {
+                                toast.remove();
+                        }, duration);
+                }
+
+                
+
+                const Submit = document.getElementById("Submit");
+
+                Submit.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        const Question = document.querySelector("#question-area")
+                        const option1 = document.getElementById('option1')
+                        const option2 = document.getElementById('option2')
+                        const option3 = document.getElementById('option3')
+                        const option4 = document.getElementById('option4')
+                        const correct_ans = document.getElementById('correct_ans')
+                        const options = [option1.value, option2.value, option3.value, option4.value]
+
+
+                        if (!Question.value || !option1.value || !option2.value || !option3.value || !option4.value || !correct_ans.value) {
+                                alert("Please fill in all fields");
+                                return;
+                        }
+                        if (!options.includes(correct_ans.value)) {
+                                alert("correct ans must be from 4 options")
+                                return
+                        }
+
+                        fetch('/api/add', {
+                                method: 'POST',
+                                headers: {
+                                        'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                        question: Question.value,
+                                        options: options,
+                                        correct_ans: correct_ans.value
+                                })
+                        }).then(response => response.json()).then(data => {
+                                console.log(data);
+                                showToast(data, 3000);
+                                Question.value = ''
+                                option1.value = ''
+                                option2.value = ''
+                                option3.value = ''
+                                option4.value = ''
+                                correct_ans.value = ''
+                        }).catch(error => {
+                                console.error('Error:', error);
+                        });
+                });
+        </script>
+</body>
+
+</html>

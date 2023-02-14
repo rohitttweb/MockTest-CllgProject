@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
-
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
 const Questions = {
 
     "questions": [
@@ -61,12 +62,40 @@ const Questions = {
         }
     ]
 }
+const mysql = require('mysql2');
+
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'project'
+});
 
 
-app.get('/questions', function (req, res) {
+const addDataToSQL = (question, options, correct_ans) => {
+    connection.connect();
+    const sql = `INSERT INTO question_bank_temp (question, option1, option2, option3, option4, correct_ans) VALUES (?, ?, ?, ?, ?, ?)`;
+    connection.query(sql, [question, options[0], options[1],options[2],options[3], correct_ans], function (error, results, fields) {
+        if (error) throw error;
+        console.log("Data added successfully");
+    });
+    connection.end();
+};
+
+
+app.get('/api/questions', function (req, res) {
     res.send(Questions)
 })
-app.get('/', function (req, res) {
+app.post('/api/add', function (req, res) {
+    console.log(req.body)
+    const {question, options, correct_ans} = req.body
+    //addDataToSQL(question, options, correct_ans)
+    res.status(200).json({ status: 'success' });
+})
+app.get('/add', function (req, res) {
+    res.sendFile('views/addQuestions.html', { root: __dirname })
+})
+app.get('/test', function (req, res) {
     res.sendFile('views/test.html', { root: __dirname })
 })
 

@@ -92,7 +92,7 @@
         const questionsContainer = document.querySelector('#questions');
         let currentQuestion = 0;
 
-        fetch('/questions').then(response => response.json()).then(data => {
+        fetch('/api/questions').then(response => response.json()).then(data => {
             console.log(data)
             const correct_ans = {}
             data.questions.forEach((question, index) => {
