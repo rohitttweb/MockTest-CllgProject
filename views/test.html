@@ -14,6 +14,18 @@
             margin: 0 auto;
             padding: 10px;
         }
+        #results {
+            
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        #score {
+            
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 10px;
+        }
 
         #questions>button {
             background-color: gray;
@@ -86,15 +98,47 @@
         #timer {
             position: absolute;
             left: 50%;
-
             transform: translateX(-50%);
             font-size: 20px;
             font-weight: bold;
+        }
+
+
+
+        #score {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        #kyabhai {
+            display: block;
+            margin: 0 auto;
+            max-width: 300px;
+            height: auto;
+            padding: 20px;
+        }
+
+        #sorrybtn {
+            display: block;
+            margin: 0 auto;
+            padding: 10px 20px;
+            background-color: grey;
+            color: white;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #sorrybtn:hover {
+            background-color: #c62828;
         }
     </style>
 </head>
 
 <body>
+    <div id="tac"><button type="button" id="accept_tac">click me</button></div>
     <div id="timer">
         <span id="minutes"></span>:<span id="seconds"></span>
     </div>
@@ -103,159 +147,222 @@
     <div id="results"></div>
 
     <script>
-        const minutesSpan = document.querySelector('#minutes');
-        const secondsSpan = document.querySelector('#seconds');
-        let totalSeconds = 3600;
-        const countDown = () => {
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds % 60;
+        const correct_ans = {}
+        let submited = true
+        const timer = document.getElementById('timer')
+        timer.style.display = 'none'
 
-            minutesSpan.textContent = minutes < 10 ? '0' + minutes : minutes;
-            secondsSpan.textContent = seconds < 10 ? '0' + seconds : seconds;
+        function startCountdown(totalSeconds, minutesSpan, secondsSpan, btn) {
+            const countDown = () => {
 
-            if (--totalSeconds < 0) {
-                clearInterval(counterInterval);
-                const btn = document.getElementById('submit')
-                btn.click()
-            }
-        };
-        const counterInterval = setInterval(countDown, 1000);
 
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+
+                minutesSpan.textContent = minutes < 10 ? '0' + minutes : minutes;
+                secondsSpan.textContent = seconds < 10 ? '0' + seconds : seconds;
+
+                if (--totalSeconds < 0) {
+                    clearInterval(counterInterval);
+                    btn.click()
+                }
+            };
+            const counterInterval = setInterval(countDown, 1000);
+            return counterInterval
+
+        }
 
         const questionsContainer = document.querySelector('#questions');
         let currentQuestion = 0;
-        fetch('/api/questions').then(response => response.json()).then((data) => {
 
-            const correct_ans = {}
-            data.data.forEach((question, index) => {
+        function displayResult() {
+            const answers = {};
+            const inputs = document.querySelectorAll('input[type="radio"]:checked');
+            for (const input of inputs) {
+                answers[input.name] = input.value;
+            }
 
-                correct_ans[`question${index + 1}`] = question.ans
+            let correctAnswers = 0;
 
-                const questionDiv = document.createElement('div');
-                questionDiv.classList.add('question');
-                questionDiv.id = `question${index + 1}`;
+            for (const question in correct_ans) {
+                const resultsElement = document.querySelector('#results');
 
-                const questionTitle = document.createElement('h2');
-                questionTitle.textContent = `Question ${index + 1}`;
+                const questionElement = document.createElement('div');
+                questionElement.setAttribute('data-question', `${question}`);
+                questionElement.innerHTML = '';
+                resultsElement.appendChild(questionElement);
 
-                const questionText = document.createElement('p');
-                questionText.innerHTML = `${question.question.replace(/\n/g, '<br>')}`;
+                const answerElement = document.querySelector(`[data-question="${question}"]`);
 
-                const optionsContainer = document.createElement('div');
-                optionsContainer.classList.add("options")
-                question.options.forEach((option) => {
-
-                    const box = document.createElement('div')
-                    box.classList.add('options-box')
-
-                    const optionInput = document.createElement('input');
-                    optionInput.type = 'radio';
-                    optionInput.name = `question${index + 1}`;
-                    optionInput.value = option
-
-                    const optionLabel = document.createElement('label');
-                    optionLabel.textContent = option;
-
-                    box.appendChild(optionInput)
-                    box.appendChild(optionLabel)
-                    box.appendChild(document.createElement('br'));
-
-                    optionsContainer.appendChild(box)
-                });
-
-                questionDiv.appendChild(questionTitle);
-                questionDiv.appendChild(questionText);
-                questionDiv.appendChild(optionsContainer);
-
-                if (index > 0) {
-                    const prevButton = document.createElement('button');
-                    prevButton.id = `prev${index + 1}`;
-                    prevButton.textContent = 'Prev';
-                    prevButton.addEventListener('click', function () {
-                        questionDiv.classList.remove('active');
-                        currentQuestion--;
-                        questionsContainer.children[currentQuestion].classList.add('active');
-                    });
-                    questionDiv.appendChild(prevButton);
+                if (correct_ans[question] === answers[question]) {
+                    answerElement.innerHTML = `${question}: Correct, correct-ans:  ${correct_ans[question]}`;
+                    answerElement.style.color = 'green';
+                    correctAnswers++;
+                } else if (answers[question] == undefined) {
+                    answerElement.innerHTML = `${question}: Unattempted,  correct-ans: ${correct_ans[question]}`;
+                    answerElement.style.color = 'grey';
+                } else {
+                    answerElement.innerHTML = `${question}: Incorrect,  correct-ans:  ${correct_ans[question]}`;
+                    answerElement.style.color = 'red';
                 }
+            }
+            const resultsElement = document.querySelector('#score');
+            resultsElement.innerHTML = `Number of correct answers: ${correctAnswers}`;
+        }
 
-                if (index < data.data.length - 1) {
-                    const nextButton = document.createElement('button');
-                    nextButton.id = `next${index + 1}`;
-                    nextButton.textContent = 'Next';
-                    nextButton.addEventListener('click', function () {
-                        questionDiv.classList.remove('active');
-                        currentQuestion++;
-                        questionsContainer.children[currentQuestion].classList.add('active');
-                    });
-                    questionDiv.appendChild(nextButton);
-                }
+        const createQuestion = (question, index, TotalQuestion) => {
+            console.log(question)
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question');
+            questionDiv.id = `question${index + 1}`;
 
-                questionsContainer.appendChild(questionDiv);
+            const questionTitle = document.createElement('h2');
+            questionTitle.textContent = `Question ${index + 1}`;
+
+            const questionText = document.createElement('p');
+            questionText.innerHTML = `${question.question.replace(/\n/g, '<br>')}`;
+            const optionsContainer = document.createElement('div');
+            optionsContainer.classList.add("options")
+            question.options.forEach((option) => {
+
+                const box = document.createElement('div')
+                box.classList.add('options-box')
+
+                const optionInput = document.createElement('input');
+                optionInput.type = 'radio';
+                optionInput.name = `question${index + 1}`;
+                optionInput.value = option
+
+                const optionLabel = document.createElement('label');
+                optionLabel.textContent = option;
+
+                box.appendChild(optionInput)
+                box.appendChild(optionLabel)
+                box.appendChild(document.createElement('br'));
+
+                optionsContainer.appendChild(box)
             });
 
-            questionsContainer.children[0].classList.add('active');
+            questionDiv.appendChild(questionTitle);
+            questionDiv.appendChild(questionText);
+            questionDiv.appendChild(optionsContainer);
 
+            if (index > 0) {
+                const prevButton = document.createElement('button');
+                prevButton.id = `prev${index + 1}`;
+                prevButton.textContent = 'Prev';
+                prevButton.addEventListener('click', function () {
+                    questionDiv.classList.remove('active');
+                    currentQuestion--;
+                    questionsContainer.children[currentQuestion].classList.add('active');
+                });
+                questionDiv.appendChild(prevButton);
+            }
+
+            if (index < TotalQuestion - 1) {
+                const nextButton = document.createElement('button');
+                nextButton.id = `next${index + 1}`;
+                nextButton.textContent = 'Next';
+                nextButton.addEventListener('click', function () {
+                    questionDiv.classList.remove('active');
+                    currentQuestion++;
+                    questionsContainer.children[currentQuestion].classList.add('active');
+                });
+                questionDiv.appendChild(nextButton);
+            }
+            return questionDiv
+
+        }
+
+        const createSubmitButton = () => {
             const submitButton = document.createElement('button');
             submitButton.id = 'submit';
             submitButton.textContent = 'Submit';
+
+            return submitButton
+
+        }
+        
+        const QuestionData = fetch('/api/questions').then(response => response.json())
+
+        QuestionData.then((data) => {
+            data.data.forEach((question, index) => {
+                correct_ans[`question${index + 1}`] = question.ans;
+                const questionDiv = createQuestion(question, index, data.data.length)
+                questionsContainer.appendChild(questionDiv);
+            });
+            const submitButton = createSubmitButton()
+            submitButton.style.display = 'none'
             questionsContainer.appendChild(submitButton);
 
-            submitButton.addEventListener('click', function (e) {
+        });
+        
+        const startTest = () => {
+            submited = false
+            let totalSeconds = 3600;
+            const minutesSpan = document.querySelector('#minutes');
+            const secondsSpan = document.querySelector('#seconds');
+            const btn = document.getElementById('submit')
+            btn.style.display = 'block'
+            timer.style.display = 'block'
+            const x = startCountdown(totalSeconds - 1, minutesSpan, secondsSpan, btn)
+
+            questionsContainer.children[0].classList.add('active');
+
+            btn.addEventListener('click', function (e) {
                 e.preventDefault();
 
-                clearInterval(counterInterval)
-
+                clearInterval(x)
                 minutesSpan.textContent = 0
                 secondsSpan.textContent = 0
 
                 questionsContainer.children[currentQuestion].classList.remove('active');
-
-
-                const answers = {};
-                const inputs = document.querySelectorAll('input[type="radio"]:checked');
-                for (const input of inputs) {
-                    answers[input.name] = input.value;
-                }
-
-                let correctAnswers = 0;
-
-                for (const question in correct_ans) {
-                    const resultsElement = document.querySelector('#results');
-
-                    const questionElement = document.createElement('div');
-                    questionElement.setAttribute('data-question', `${question}`);
-                    questionElement.innerHTML = '';
-                    resultsElement.appendChild(questionElement);
-
-                    const answerElement = document.querySelector(`[data-question="${question}"]`);
-
-                    if (correct_ans[question] === answers[question]) {
-                        answerElement.innerHTML = `${question}: Correct, correct-ans:  ${correct_ans[question]}`;
-                        answerElement.style.color = 'green';
-                        correctAnswers++;
-                    } else if (answers[question] == undefined) {
-                        answerElement.innerHTML = `${question}: Unattempted,  correct-ans: ${correct_ans[question]}`;
-                        answerElement.style.color = 'grey';
-                    } else {
-                        answerElement.innerHTML = `${question}: Incorrect,  correct-ans:  ${correct_ans[question]}`;
-                        answerElement.style.color = 'red';
-                    }
-                }
-                const resultsElement = document.querySelector('#score');
-                resultsElement.innerHTML = `Number of correct answers: ${correctAnswers}`;
-                submitButton.style.display = 'none'
+                submited = true
+                displayResult()
+                btn.style.display = 'none'
             });
+        }
+
+        const tac = document.getElementById('accept_tac')
+        tac.addEventListener('click', () => {
+            tac.style.display = 'none'
+            console.log('Button clicked!');
+            startTest()
 
         });
 
         window.onbeforeunload = function () {
             return "Are you sure you want to leave this page?";
         };
+
         window.addEventListener("blur", function () {
-            alert("You are not allowed to leave page blah blah");
-            const btn = document.getElementById('submit')
-            btn.click()
+            if (!submited) {
+                submited = true
+                questionsContainer.children[currentQuestion].classList.remove('active');
+                timer.style.display = 'none'
+                const img = document.createElement('img');
+                img.setAttribute('id', 'kyabhai');
+                img.setAttribute('src', '/fashya.jpeg');
+                img.setAttribute('alt', 'image description');
+                img.setAttribute('title', 'image title');
+
+                document.body.appendChild(img);
+
+                const sorrybtn = document.createElement('button')
+                sorrybtn.id = 'sorrybtn';
+                sorrybtn.textContent = 'Sorry!';
+                document.body.appendChild(sorrybtn)
+
+                const btn = document.getElementById('submit')
+                btn.style.display = 'none'
+                sorrybtn.addEventListener('click', function () {
+                    
+                    alert("Too Late!!!!")
+                    img.remove()
+                    sorrybtn.remove('sorrybtn')
+                    btn.click()
+                });
+            }
         });
     </script>
 </body>
