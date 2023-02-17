@@ -1,12 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .testlengthContainer {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #Test-length {
+            margin: 10px;
+            font-size: 16px;
+            padding: 8px 16px;
+            border: 2px solid gray;
+            border-radius: 5px;
+            background-color: white;
+            color: black;
+            cursor: pointer;
+        }
+
+        a {
+            background-color: gray;
+            color: white;
+            padding: 10px 30px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            margin-top: 30px;
+            text-decoration: none;
+        }
+    </style>
 </head>
+
 <body>
-    <a href="/test">test</a>
+    <div class="testlengthContainer">
+
+        <select id="Test-length">
+            <option value="0">choose Test length</option>
+            <option value="4">4</option>
+            <option value="8">8</option>
+            <option value="12">12</option>
+        </select>
+
+        <a href="/test">test</a>
+
+    </div>
+
+    <script>
+        const selectElement = document.getElementById('Test-length');
+        selectElement.addEventListener('change', function () {
+            if(selectElement.value == 0){
+                localStorage.removeItem('TestLength')
+                return
+            }
+            const selectedValue = selectElement.value;
+            localStorage.setItem('TestLength', selectedValue);
+        })
+
+
+    </script>
 </body>
+
 </html>

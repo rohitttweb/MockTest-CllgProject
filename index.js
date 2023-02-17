@@ -4,9 +4,9 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-const Questionss = {
+const Questionss = 
 
-    "questions": [
+     [
         {
             "id": 1,
             "question": "What is your favorite color?",
@@ -63,7 +63,7 @@ const Questionss = {
             'ans': 'The Great Gatsby'
         }
     ]
-}
+
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
@@ -84,14 +84,15 @@ const addDataToSQL = (question, options, correct_ans, maintopic, subtopic) => {
 
 
 app.get('/api/questions', function (req, res) {
-    connection.query('SELECT * FROM question_bank_temp', function (error, results, fields) {
+    const testlength = req.query.testlength
+    console.log(req.query)
+    connection.query(`SELECT * FROM question_bank_temp ORDER BY RAND() LIMIT ${testlength}`, function (error, results, fields) {
         if (error) {
             res.send({
                 'code': 400,
                 'failed': 'Error occurred while fetching data'
             })
         } else {
-            console.log(results)
             const Questions = []
             results.forEach(result => {
                 const item = {
@@ -110,7 +111,7 @@ app.get('/api/questions', function (req, res) {
             res.send({
                'code': 200,
                'success': 'Data fetched successfully',
-               'data': Questions
+               'data': Questionss.slice(0, testlength)
              })
         }
     });
