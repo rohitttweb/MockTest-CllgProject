@@ -3,7 +3,7 @@ const app = express()
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(express.static('public'));
-
+app.disable('x-powered-by');
 const Questionss = 
 
      [
