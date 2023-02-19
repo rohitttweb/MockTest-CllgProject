@@ -13,7 +13,6 @@ function printBoth(questionsDiv, resultDiv) {
         for (let j = 0; j < label.length; j++) {
 
             if (answers[`question${i + 1}`] == label[j].innerText) {
-                console.log('sjh')
                 if (correctAnswers[i] == answers[`question${i + 1}`]) {
 
                     label[j].style.border = '2px solid green'
@@ -55,6 +54,10 @@ function printBoth(questionsDiv, resultDiv) {
     printtemp.style.display = 'none'
     const printContents1 = document.getElementById(questionsDiv);
     const printContents2 = document.getElementById(resultDiv);
+    const timeTag = printContents2.querySelector('p')
+    const time = new Date()
+    timeTag.innerHTML = `Given on ${time.toString()}`
+    
 
     const hr = document.createElement('hr')
     const br = document.createElement('br')
@@ -64,8 +67,17 @@ function printBoth(questionsDiv, resultDiv) {
     temp.appendChild(printContents2)
     temp.appendChild(printContents1)
 
+    var win = window.open('', '_blank');
+    win.document.write('<html><head><link rel="stylesheet" href="/TestPage/test.css"></head><body>');
+    win.document.write(temp.innerHTML);     // Write contents in the new window.
+    win.document.write('</body></html>');
+    win.document.close();
+    win.focus()
+    setTimeout(() => {
+        win.print()
+    },1000);
     document.body.innerHTML = temp.innerHTML;
-    window.print();
+    //window.print();
     document.body.innerHTML = originalContents;
 
     for (let i = 0; i < questions.length; i++) {
@@ -119,15 +131,9 @@ function displayResult() {
     }
 
     let correctAnswers = 0;
-    let Unattempted = 0;
     let Wrong = 0;
-
-    let Verbal = [0, 0, 0]
-    let GeneralAwareness = []
-    let Aptitude = []
-    let Reasoning = []
-
-    // totalquestion, correct, wrong, unattemped, 
+   
+    // totalquestion, correct, Wrong, unattemped, 
     let topicScore = [0, 0, 0, 0]
 
     let index = 0
@@ -141,7 +147,7 @@ function displayResult() {
                 correctAnswers++;
                 topicScore[1]++
             } else if (answers[question] == undefined) {
-                Unattempted++
+
                 topicScore[3]++
             } else {
                 Wrong++
@@ -274,7 +280,6 @@ const QuestionData = fetch(`/api/questions?testlength=${localStorage.getItem('Te
 
 QuestionData.then((data) => {
     TotalQuestion = data.data.length
-    console.log(data.data)
     data.data.forEach((question, index) => {
         correctAnswers.push(question.ans)
         if (index + 1 <= TotalQuestion / 4) {

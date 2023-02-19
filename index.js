@@ -4,9 +4,9 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(express.static('public'));
 app.disable('x-powered-by');
-const Questionss = 
+const Questionss =
 
-     [
+    [
         {
             "id": 1,
             "question": "What is your favorite color?",
@@ -75,51 +75,66 @@ const connection = mysql.createConnection({
 
 
 const addDataToSQL = (question, options, correct_ans, maintopic, subtopic) => {
-    const sql = `INSERT INTO question_bank_temp (question, option1, option2, option3, option4, correct_ans, maintopic, subtopic) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO question_bank (question, option1, option2, option3, option4, correct_ans, maintopic, subtopic) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
     connection.query(sql, [question, options[0], options[1], options[2], options[3], correct_ans, maintopic, subtopic], function (error, results, fields) {
         if (error) throw error;
         console.log("Data added successfully");
     });
 };
+const GetQuestions = async (x, topic) => {
+    const Questions = []
+    const query = `SELECT * FROM question_bank WHERE maintopic = '${topic}' ORDER BY RAND() LIMIT ${x}`
 
+    const results = await new Promise((resolve, reject) => {
+        connection.query(query, (error, results, fields) => {
+            if (error) {
+                reject(error)
+            } else {
+                resolve(results)
+            }
+        })
+    })
 
-app.get('/api/questions', function (req, res) {
-    const testlength = req.query.testlength
-    console.log(req.query)
-    connection.query(`SELECT * FROM question_bank_temp ORDER BY RAND() LIMIT ${testlength}`, function (error, results, fields) {
-        if (error) {
-            res.send({
-                'code': 400,
-                'failed': 'Error occurred while fetching data'
-            })
-        } else {
-            const Questions = []
-            results.forEach(result => {
-                const item = {
-                    "id": result.id,
-                    "question": result.question,
-                    "options": [
-                        result.option1,
-                        result.option2,
-                        result.option3,
-                        result.option4,   
-                    ],
-                    'ans': result.correct_ans
-                }
-                Questions.push(item)
-            });
-            res.send({
-               'code': 200,
-               'success': 'Data fetched successfully',
-               'data': Questionss.slice(0, testlength)
-             })
+    results.forEach(result => {
+        const item = {
+            "id": result.id,
+            "question": result.question,
+            "options": [
+                result.option1,
+                result.option2,
+                result.option3,
+                result.option4,
+            ],
+            'ans': result.correct_ans
         }
-    });
+        Questions.push(item)
+    })
+
+    return Questions
+}
+
+
+app.get('/api/questions', async function (req, res) {
+    const testlength = Number(req.query.testlength)
+    if(!testlength){
+        return
+    }
+    let verbal = await GetQuestions(testlength / 4, 'verbal');
+    let GeneralAwareness = await GetQuestions(testlength / 4, 'general_awareness');
+    let Aptitude = await GetQuestions(testlength / 4, 'aptitude');
+    let Reasoning = await GetQuestions(testlength / 4, 'reasoning');
+    const Questionsss = verbal.concat(GeneralAwareness, Aptitude, Reasoning)
+    res.send({
+        'code': 200,
+        'success': 'Data fetched successfully',
+        'data': Questionsss
+    })
+    
 })
 app.post('/api/add', function (req, res) {
     console.log(req.body)
     const { question, options, correct_ans, mainTopic, subTopic } = req.body
-    //addDataToSQL(question, options, correct_ans, mainTopic, subTopic)
+    addDataToSQL(question, options, correct_ans, mainTopic, subTopic)
     res.status(200).json({ status: 'success' });
 })
 app.get('/add', function (req, res) {

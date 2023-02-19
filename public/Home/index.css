@@ -28,11 +28,11 @@ nav {
     width: 90%;
 }
 .nav-logo {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
     text-decoration: none;
     color: #000000;
-    padding: 10px 20px;
+    padding: 10px 10px;
     border-radius: 5px;
 }
 .nav-logo:hover{
@@ -104,13 +104,13 @@ nav {
     transition: all 0.3s ease-in-out;
 }
 .main-container h1 {
-    font-size: 3rem;
-    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
     text-align: center;
     color: #333;
 }
 .main-container p {
-    font-size: 1rem;
+    font-size: 0.8rem;
     margin: 0 auto;
     text-align: center;
     color: #333;
@@ -137,12 +137,12 @@ a:hover {
     background-color: #388e3c;
 }
 @media only screen and (min-width: 600px) {
-    h1 {
-        font-size: 4rem;
+    .main-container h1 {
+        font-size: 3.5rem;
     }
-    p {
+    .main-container p {
         font-size: 1rem;
-        margin-bottom: 4rem;
+        margin-bottom: 3rem;
     }
     .select-container {
         flex-direction: row;
@@ -153,6 +153,7 @@ a:hover {
         margin-right: 1rem;
         max-width: 200px;
     }
+   
 }
 .about {
     display: flex;
