@@ -75,9 +75,7 @@ function printBoth(questionsDiv, resultDiv) {
     win.focus()
     setTimeout(() => {
         win.print()
-    },1000);
-    document.body.innerHTML = temp.innerHTML;
-    //window.print();
+    },1200);
     document.body.innerHTML = originalContents;
 
     for (let i = 0; i < questions.length; i++) {
