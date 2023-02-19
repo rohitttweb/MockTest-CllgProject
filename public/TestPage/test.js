@@ -71,6 +71,7 @@ function printBoth(questionsDiv, resultDiv) {
     win.document.write('<html><head><link rel="stylesheet" href="/TestPage/test.css"></head><body>');
     win.document.write(temp.innerHTML);     // Write contents in the new window.
     win.document.write('</body></html>');
+    win.document.title =`Test Given on ${time.toString()}`
     win.document.close();
     win.focus()
     setTimeout(() => {
