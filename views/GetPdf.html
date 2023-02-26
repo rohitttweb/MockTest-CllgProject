@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #questions{
+          
+        }
+        .question{
+
+        }
+        #answers{
+            margin: 30px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+        #answers>div{
+            width: 50px;
+            border: 1px solid black;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="questions"></div>
+
+
+    <script>
+        const questionsContainer = document.querySelector('#questions');
+        const abcd = ['a', 'b', 'c', 'd']
+        const answers = document.createElement('div')
+        answers.id = 'answers'
+        const createQuestion = (question, index, TotalQuestion) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question');
+            questionDiv.id = `question${index + 1}`;
+
+            const questionTitle = document.createElement('h2');
+            questionTitle.textContent = `Question ${index + 1}`;
+
+            const questionText = document.createElement('p');
+            questionText.innerHTML = `${question.question.replace(/\n/g, '<br>')}`;
+            const optionsContainer = document.createElement('div');
+            optionsContainer.classList.add("options")
+            question.options.forEach((option, x) => {
+                if (option == question.ans) {
+                    const option_ans = document.createElement('div')
+                    option_ans.innerHTML = `<b>${index+1}.</b>  ${abcd[x]}`
+                    answers.appendChild(option_ans)
+                }
+                const box = document.createElement('div')
+                box.classList.add('options-box')
+
+                const optionInput = document.createElement('span');
+                optionInput.innerHTML = `${abcd[x]}.  `
+
+                box.appendChild(document.createElement('br'));
+                const optionLabel = document.createElement('span');
+                optionLabel.textContent = option;
+
+                box.appendChild(optionInput)
+                box.appendChild(optionLabel)
+
+                optionsContainer.appendChild(box)
+            });
+
+            questionDiv.appendChild(questionTitle);
+            questionDiv.appendChild(questionText);
+            questionDiv.appendChild(optionsContainer);
+
+            return questionDiv
+
+        }
+
+        const QuestionData = fetch(`/api/questions?testlength=20&testTopic=aptitude`).then(response => response.json())
+
+        QuestionData.then((data) => {
+            TotalQuestion = data.data.length
+            data.data.forEach((question, index) => {
+                const questionDiv = createQuestion(question, index, TotalQuestion)
+                questionsContainer.appendChild(questionDiv);
+            });
+
+
+            questionsContainer.appendChild(answers)
+        });
+    </script>
+</body>
+
+</html>

@@ -1,46 +1,59 @@
-Data Interpretation
-Inequalities
+const Questionss =
 
-Number Series
-Arithmetic Aptitude
-Age Problems
-
-Probability
-Mensuration
-Permutation and Combination
-
-Partnerships
-Stream Boat Problems
-Mixture and Alligation
-Pipes and Cisterns
-Coding and Decoding
-
-
-
-Comprehension
-Error detection
-Sentence completion/filling in of correct word
-Synonyms
-Antonyms and testing of vocabulary
-Idioms and phrases
-
-
-
-Alphabet Test
-Analogy
-Arithmetical Reasoning
-Blood Relations
-Calendar and Clock Test
-Classification
-Coding-Decoding
-Cubes and Dices Test
-Data Sufficiency
-Images
-Mathematical Operations
-Non-Verbal Series
-Number-Ranking-Time Sequence
-Puzzle Test
-Series Completion
-Statements
-Syllogism
-Verbal Reasoning
+    [
+        {
+            "id": 1,
+            "question": "What is your favorite color?",
+            "options": [
+                "Red",
+                "Green",
+                "Blue",
+                "Yellow"
+            ],
+            'ans': 'Yellow'
+        },
+        {
+            "id": 2,
+            "question": "What is your favorite food?",
+            "options": [
+                "Pizza",
+                "Hamburger",
+                "Sushi",
+                "Tacos"
+            ],
+            'ans': 'Hamburger'
+        },
+        {
+            "id": 3,
+            "question": "What is your favorite animal?",
+            "options": [
+                "Cat",
+                "Dog",
+                "Elephant",
+                "Giraffe"
+            ],
+            "ans": "Dog"
+        },
+        {
+            "id": 4,
+            "question": "What is your favorite movie?",
+            "options": [
+                "The Shawshank Redemption",
+                "The Godfather",
+                "The Dark Knight",
+                "Pulp Fiction"
+            ],
+            'ans': 'The Shawshank Redemption'
+        },
+        {
+            "id": 5,
+            "question": "What is your favorite book?",
+            "options": [
+                "To Kill a Mockingbird",
+                "The Great Gatsby",
+                "Pride and Prejudice",
+                "1984"
+            ],
+            'ans': 'The Great Gatsby'
+        }
+    ]

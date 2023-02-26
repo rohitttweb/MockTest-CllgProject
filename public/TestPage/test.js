@@ -49,9 +49,12 @@ function printBoth(questionsDiv, resultDiv) {
     }
 
     const originalContents = document.body.innerHTML;
+
     const temp = document.createElement('div')
+    
     const printtemp = document.getElementById('print')
     printtemp.style.display = 'none'
+
     const printContents1 = document.getElementById(questionsDiv);
     const printContents2 = document.getElementById(resultDiv);
     const timeTag = printContents2.querySelector('p')
@@ -72,11 +75,11 @@ function printBoth(questionsDiv, resultDiv) {
     win.document.write(temp.innerHTML);     // Write contents in the new window.
     win.document.write('</body></html>');
     win.document.title =`Test Given on ${time.toString()}`
-    win.document.close();
     win.focus()
     setTimeout(() => {
         win.print()
     },1200);
+    win.document.close();
     document.body.innerHTML = originalContents;
 
     for (let i = 0; i < questions.length; i++) {
@@ -89,10 +92,10 @@ function printBoth(questionsDiv, resultDiv) {
 }
 
 const AnswerSheet = {
-    Verbal: {},
-    GeneralAwareness: {},
-    Aptitude: {},
-    Reasoning: {}
+    verbal: {},
+    general_awareness: {},
+    aptitude: {},
+    reasoning: {}
 }
 let submited = true
 const timer = document.getElementById('timer')
@@ -129,9 +132,8 @@ function displayResult() {
         answers[input.name] = input.value;
     }
 
-    let correctAnswers = 0;
+    let CorrectAnswers = 0;
     let Wrong = 0;
-   
     // totalquestion, correct, Wrong, unattemped, 
     let topicScore = [0, 0, 0, 0]
 
@@ -143,10 +145,9 @@ function displayResult() {
         for (const question in AnswerSheet[Topic]) {
             topicScore[0]++
             if (AnswerSheet[Topic][question] === answers[question]) {
-                correctAnswers++;
+                CorrectAnswers++;
                 topicScore[1]++
             } else if (answers[question] == undefined) {
-
                 topicScore[3]++
             } else {
                 Wrong++
@@ -156,25 +157,27 @@ function displayResult() {
 
         const row = table.rows[index];
 
+        const __TopicName = row.cells[0]
         const __totalquestion = row.cells[1]
         const __Correct = row.cells[2];
         const __Wrong = row.cells[3];
         const __Unattempted = row.cells[4]
         const __Score = row.cells[5];
 
+        __TopicName.innerHTML = Topic
         __totalquestion.innerHTML = topicScore[0]
         __Correct.innerHTML = topicScore[1]
         __Wrong.innerHTML = topicScore[2]
         __Unattempted.innerHTML = topicScore[3]
 
-        __Score.innerHTML = topicScore[1] * 4;
+        __Score.innerHTML = topicScore[1]; //score
         topicScore = [0, 0, 0, 0]
 
 
     }
     const totalscore_row = table.rows[5]
     const totalscore = totalscore_row.cells[1]
-    totalscore.innerHTML = `${(correctAnswers * 4) - (Wrong * 1)} / ${TotalQuestion * 4}`
+    totalscore.innerHTML = `${(CorrectAnswers) - (Wrong * 0.25)} / ${TotalQuestion}`
 
 }
 
@@ -275,13 +278,14 @@ const testlength = document.getElementById('testlength')
 testlength.innerHTML = `Test Length: ${localStorage.getItem('TestLength')}`
 
 
-const QuestionData = fetch(`/api/questions?testlength=${localStorage.getItem('TestLength')}`).then(response => response.json())
+const QuestionData = fetch(`/api/questions?testlength=${localStorage.getItem('TestLength')}&testTopic=${localStorage.getItem("TestTopic")}`).then(response => response.json())
 
 QuestionData.then((data) => {
     TotalQuestion = data.data.length
     data.data.forEach((question, index) => {
         correctAnswers.push(question.ans)
-        if (index + 1 <= TotalQuestion / 4) {
+        AnswerSheet[question.topic][`question${index + 1}`] = question.ans
+        /* if (index + 1 <= TotalQuestion / 4) {
             AnswerSheet['Verbal'][`question${index + 1}`] = question.ans;
 
         } else if (index + 1 > TotalQuestion / 4 && index + 1 <= ((TotalQuestion / 4) * 2)) {
@@ -293,7 +297,7 @@ QuestionData.then((data) => {
         } else {
             AnswerSheet['Reasoning'][`question${index + 1}`] = question.ans;
 
-        }
+        } */
         const questionDiv = createQuestion(question, index, TotalQuestion)
         questionsContainer.appendChild(questionDiv);
     });
@@ -310,7 +314,7 @@ QuestionData.then((data) => {
 const startTest = () => {
 
     submited = false
-    let totalSeconds = (localStorage.getItem('TestLength') * 0.6) *60;
+    let totalSeconds =  Math.ceil((localStorage.getItem('TestLength') * 0.6) *60);
     const minutesSpan = document.querySelector('#minutes');
     const secondsSpan = document.querySelector('#seconds');
     const submitbtn = document.getElementById('submit')
@@ -359,12 +363,12 @@ window.addEventListener("blur", function () {
         timer.style.display = 'none'
         const img = document.createElement('img');
         img.setAttribute('id', 'kyabhai');
-        img.setAttribute('src', '/fashya.jpeg');
+        img.setAttribute('src', '/bhai.png');
         img.setAttribute('alt', 'image description');
         img.setAttribute('title', 'image title');
 
         document.body.appendChild(img);
-
+ 
         const sorrybtn = document.createElement('button')
         sorrybtn.id = 'sorrybtn';
         sorrybtn.textContent = 'Sorry!';
