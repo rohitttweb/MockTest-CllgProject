@@ -111,9 +111,9 @@ router.post('/login', function (req, res) {
 })
 router.post('/register', function (req, res) {
     const name = req.body.name
-    const lastname = req.body.lastname
     const username = req.body.username
     const password = req.body.password
+    console.log(req.body)
     if (username.length < 5) return res.send("Username should be Greater then 5 letters")
     if (password.length < 8) return res.send("Password should be Greater then 8 letters")
     const query = `SELECT username FROM users WHERE username = '${username}'`
@@ -123,17 +123,32 @@ router.post('/register', function (req, res) {
         if (results.length > 0) return res.send('username exists')
         bcrypt.hash(password, 10, async function (err, hash) {
             if (err) return res.sendStatus(500)
-            const sql = `INSERT INTO users (username, password, name, lastname) VALUES (?, ?, ?, ?)`;
-            connection.query(sql, [username, hash, name, lastname], function (error, results, fields) {
+            const sql = `INSERT INTO users (username, password, name) VALUES (?, ?, ?)`;
+            connection.query(sql, [username, hash, name], function (error, results, fields) {
                 if (error) throw error;
                 console.log("user added successfully");
             });
-            return res.sendStatus(200)
+            return res.status(200).json({ success: true });
         });
     })
 })
 router.get('/whoami', authToken, function (req, res) {
     res.json(req.user).status(200)
+})
+router.post('/isexist', function (req, res) {
+    const username = req.body.__username
+    console.log(username)
+    const query = `SELECT username FROM users WHERE username = '${username}'`
+    connection.query(query, function (error, results, fields) {
+        console.log('mmmmmmmmmmmm')
+        if (error) throw error;
+        if (results.length > 0) return res.send({message: "Username is not avalable"})
+        return res.status(200).json({ success: true });
+
+     
+    });
+
+    
 })
 function authToken(req, res, next) {
     //will return user from jwt token send with request

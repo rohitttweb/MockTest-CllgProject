@@ -27,5 +27,9 @@ app.get('/pdf', function (req, res) {
 app.get('/', function (req, res) {
     res.sendFile('views/index.html', { root: __dirname })
 })
+app.get('/signup', function (req, res) {
+    res.sendFile('views/signup.html', { root: __dirname })
+})
+
 
 app.listen(3000)
