@@ -124,3 +124,7 @@ TestLength.addEventListener('change', function(){
         TakeATest.style.display = 'block'
     }
 })
+document.addEventListener('scroll', function(){
+    navMenu.classList.remove('nav-active');
+    navContainer.classList.remove('nav-active');
+})
