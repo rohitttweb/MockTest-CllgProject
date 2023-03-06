@@ -29,9 +29,9 @@ const addDataToSQL = (question, options, correct_ans, maintopic, subtopic) => {
         console.log("Data added successfully");
     });
 };
-const GetQuestions = async (topic, length) => {
+const GetQuestions = async (topic, subtopic, length) => {
     const Questions = []
-    const query = `SELECT * FROM question_bank WHERE maintopic = '${topic}' ORDER BY RAND() LIMIT ${length}`
+    const query = `SELECT * FROM question_bank WHERE maintopic = '${topic}' AND subtopic = '${subtopic}' ORDER BY RAND() LIMIT ${length}`
 
     const results = await new Promise((resolve, reject) => {
         connection.query(query, (error, results, fields) => {
@@ -65,12 +65,14 @@ const GetQuestions = async (topic, length) => {
 
 
 router.get('/questions', async function (req, res) {
-    const testTopic = (req.query.testTopic)
+    const testTopic = (req.query.Topic)
+    const testSubTopic = (req.query.subTopic)
     const testlength = Number(req.query.testlength)
+    console.log(req.query)
     if (!testlength) {
         return
     }
-    let questions = await GetQuestions(testTopic, testlength)
+    let questions = await GetQuestions(testTopic, testSubTopic, testlength)
     console.log(questions)
     /* let verbal = await GetQuestions(testlength / 4, 'verbal');
     let GeneralAwareness = await GetQuestions(testlength / 4, 'general_awareness');

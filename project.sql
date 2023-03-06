@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 19, 2023 at 10:19 AM
+-- Generation Time: Mar 06, 2023 at 03:47 AM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 8.0.8
 
@@ -20,6 +20,32 @@ SET time_zone = "+00:00";
 --
 -- Database: `project`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `form1`
+--
+
+CREATE TABLE `form1` (
+  `Name` varchar(20) NOT NULL,
+  `Age` int(100) NOT NULL,
+  `Dob` text NOT NULL,
+  `center_choice_1` varchar(20) NOT NULL,
+  `center_choice_2` varchar(20) NOT NULL,
+  `center_choice_3` varchar(20) NOT NULL,
+  `center_alloted` tinyint(2) NOT NULL DEFAULT 0,
+  `center` varchar(20) NOT NULL,
+  `exam_date` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `form1`
+--
+
+INSERT INTO `form1` (`Name`, `Age`, `Dob`, `center_choice_1`, `center_choice_2`, `center_choice_3`, `center_alloted`, `center`, `exam_date`) VALUES
+('John Doe', 30, '01/01/1993', 'Option 1', 'Option 1', 'Option 1', 0, '', ''),
+('user1', 22, '01/01/1993', 'Option 5', 'Option 1', 'Option 4', 0, '', '');
 
 -- --------------------------------------------------------
 
@@ -99,6 +125,31 @@ INSERT INTO `question_bank` (`id`, `question`, `option1`, `option2`, `option3`, 
 (53, 'Two positions of dice are shown below. How many points will appear on the opposite to the face containing 5 points?\n\n<img src=\"https://www.indiabix.com/_files/images/verbal-reasoning/dice/4-13-1-14.png\">', '3', '1', '2', '4', '4', 'reasoning', 'Dice'),
 (54, 'Which symbol will be on the face opposite to the face with symbol * ?\n\n<img src=\"https://www.indiabix.com/_files/images/verbal-reasoning/dice/4-13-1-4.png\">', '@', '$', '8', '+', '8', 'reasoning', 'Dice');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `username` text NOT NULL,
+  `password` text NOT NULL,
+  `name` text NOT NULL,
+  `lastname` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`username`, `password`, `name`, `lastname`) VALUES
+('user1', '$2b$10$Fn9WKKoqd.xnXbuW2GZh8.wTb6RNSxtu8FxovppjSrGZP5wJ7CxHq', 'Rohit', 'kumar'),
+('rohitttweb', '$2b$10$1ImcetsnbAsK7LhUbUO7geZMHoqnyvxKCPfV4o39N2eilcz1uE0DW', 'Rohit Kumar', ''),
+('user2', '$2b$10$txMBQKJLDw6godJn7jXumudKoinNdwdC0Arh9DZwV85QQydQl9B8e', 'user2', ''),
+('user3', '$2b$10$SrHv9GBGk8PIoq5pr73gUOitNF2brhqbGUHIQMyIO579STs5Zn5Ce', 'test user', ''),
+('rohittt', '$2b$10$i4khzdu8QeD7h0OG0E2F9e8fjL6mTe0XWwSex0Fr8kEBa0unp6NZ6', 'rohittt', ''),
+('user11', '$2b$10$ovvKTVRjaBRC/MEaHfaKie6V5YhUUW3adAEQO9p8PHI3BlTC7JLJi', 'user', '');
+
 --
 -- Indexes for dumped tables
 --
@@ -108,6 +159,12 @@ INSERT INTO `question_bank` (`id`, `question`, `option1`, `option2`, `option3`, 
 --
 ALTER TABLE `question_bank`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD UNIQUE KEY `username` (`username`) USING HASH;
 
 --
 -- AUTO_INCREMENT for dumped tables

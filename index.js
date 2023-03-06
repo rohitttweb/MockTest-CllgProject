@@ -18,12 +18,16 @@ app.get('/add', function (req, res) {
     res.sendFile('views/addQuestions.html', { root: __dirname })
 })
 app.get('/test', function (req, res) {
+    console.log(req.query)
     res.sendFile('views/test.html', { root: __dirname })
 })
 app.get('/pdf', function (req, res) {
     res.sendFile('views/GetPdf.html', { root: __dirname })
 })
 
+app.get('/dashboard', function (req, res) {
+    res.sendFile('views/Home.html', { root: __dirname })
+})
 app.get('/', function (req, res) {
     res.sendFile('views/index.html', { root: __dirname })
 })

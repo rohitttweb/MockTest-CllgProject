@@ -1,6 +1,48 @@
-if (!localStorage.getItem('TestLength')) {
-    window.location.replace('/')
+function getUserToken() {
+    const cookies = document.cookie.split("; ");
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].split("=");
+        if (cookie[0] === "UserToken") {
+            const Token = cookie[1];
+            console.log("UserToken:", Token);
+            return Token
+        }
+    }
+    return false
 }
+const Token = getUserToken();
+
+if (!Token) {
+    window.location.href = "/login"
+}
+if (!localStorage.getItem('TestToken')) {
+    window.location.href = '/dashboard'
+}
+const params = new Proxy(new URLSearchParams(window.location.search), {
+    get: (searchParams, prop) => searchParams.get(prop),
+});
+// Get the value of "some_key" in eg "https://example.com/?some_key=some_value"
+let ___Topic = params.Topic; // "some_value"
+let ___SubTopic = params.subTopic; // "some_value"
+let ___testlength = params.testlength; // "some_value"
+const ListOfTpoics = {
+    aptitude: [
+        "Averages",
+        "Percentages",
+        "Profit and Loss",
+        "Ratios and Proportions",
+        "Simple Interest and Compound Interest",
+        "Time and Work",
+        "Time and Speed",
+    ],
+    reasoning: [],
+    general_awareness: [],
+    verbal: ["Synonym  Antonyms"]
+}
+if (!ListOfTpoics.hasOwnProperty(___Topic) || !ListOfTpoics[___Topic].includes(___SubTopic) || ___testlength <= 0) {
+    window.location.href = '/dashboard'
+}
+
 let correctAnswers = []
 
 function printBoth(questionsDiv, resultDiv) {
@@ -51,7 +93,7 @@ function printBoth(questionsDiv, resultDiv) {
     const originalContents = document.body.innerHTML;
 
     const temp = document.createElement('div')
-    
+
     const printtemp = document.getElementById('print')
     printtemp.style.display = 'none'
 
@@ -60,7 +102,7 @@ function printBoth(questionsDiv, resultDiv) {
     const timeTag = printContents2.querySelector('p')
     const time = new Date()
     timeTag.innerHTML = `Given on ${time.toString()}`
-    
+
 
     const hr = document.createElement('hr')
     const br = document.createElement('br')
@@ -74,11 +116,11 @@ function printBoth(questionsDiv, resultDiv) {
     win.document.write('<html><head><link rel="stylesheet" href="/TestPage/test.css"></head><body>');
     win.document.write(temp.innerHTML);     // Write contents in the new window.
     win.document.write('</body></html>');
-    win.document.title =`Test Given on ${time.toString()}`
+    win.document.title = `Test Given on ${time.toString()}`
     win.focus()
     setTimeout(() => {
         win.print()
-    },1200);
+    }, 1200);
     win.document.close();
     document.body.innerHTML = originalContents;
 
@@ -92,10 +134,7 @@ function printBoth(questionsDiv, resultDiv) {
 }
 
 const AnswerSheet = {
-    verbal: {},
-    general_awareness: {},
-    aptitude: {},
-    reasoning: {}
+
 }
 let submited = true
 const timer = document.getElementById('timer')
@@ -134,14 +173,12 @@ function displayResult() {
 
     let CorrectAnswers = 0;
     let Wrong = 0;
-    // totalquestion, correct, Wrong, unattemped, 
-    let topicScore = [0, 0, 0, 0]
+    // totalquestion, correct, Wrong, unattemped, Total, 
+    let topicScore = [0, 0, 0, 0, 0]
 
-    let index = 0
     const table = document.getElementById("resultTable");
 
     for (const Topic in AnswerSheet) {
-        index++
         for (const question in AnswerSheet[Topic]) {
             topicScore[0]++
             if (AnswerSheet[Topic][question] === answers[question]) {
@@ -154,30 +191,22 @@ function displayResult() {
                 topicScore[2]++
             }
         }
-
-        const row = table.rows[index];
-
-        const __TopicName = row.cells[0]
-        const __totalquestion = row.cells[1]
-        const __Correct = row.cells[2];
-        const __Wrong = row.cells[3];
-        const __Unattempted = row.cells[4]
-        const __Score = row.cells[5];
-
-        __TopicName.innerHTML = Topic
-        __totalquestion.innerHTML = topicScore[0]
-        __Correct.innerHTML = topicScore[1]
-        __Wrong.innerHTML = topicScore[2]
-        __Unattempted.innerHTML = topicScore[3]
-
-        __Score.innerHTML = topicScore[1]; //score
-        topicScore = [0, 0, 0, 0]
+        topicScore[4] = `${(CorrectAnswers) - (Wrong * 0.25)} / ${TotalQuestion}`
+        let row = table.rows[0]
+        let tr2 = row.cells[1]
+        tr2.innerHTML = `${Topic.toUpperCase()} (${___SubTopic})`
+        for (let i = 0; i < 5; i++) {
+            row = table.rows[i + 1];
+            tr2 = row.cells[1]
+            tr2.innerHTML = topicScore[i]
+        }
+        topicScore = [0, 0, 0, 0, 0]
 
 
     }
-    const totalscore_row = table.rows[5]
-    const totalscore = totalscore_row.cells[1]
-    totalscore.innerHTML = `${(CorrectAnswers) - (Wrong * 0.25)} / ${TotalQuestion}`
+    /*  const totalscore_row = table.rows[++index]
+     const totalscore = totalscore_row.cells[1]
+     totalscore.innerHTML = `${(CorrectAnswers) - (Wrong * 0.25)} / ${TotalQuestion}` */
 
 }
 
@@ -255,10 +284,10 @@ const createSubmitButton = () => {
 const createJumpSelect = () => {
     const JumpSelect = document.createElement('select');
     JumpSelect.id = 'JumpSelect';
-    for (let x = 0; x < localStorage.getItem('TestLength'); x++) {
+    for (let x = 0; x < ___testlength; x++) {
 
         const option = document.createElement('option')
-        option.text = x +1 ;
+        option.text = x + 1;
         option.value = x;
         JumpSelect.add(option)
     }
@@ -275,15 +304,18 @@ const createJumpSelect = () => {
 
 
 const testlength = document.getElementById('testlength')
-testlength.innerHTML = `Test Length: ${localStorage.getItem('TestLength')}`
+testlength.innerHTML = `Test Length: ${___testlength}`
 
 
-const QuestionData = fetch(`/api/questions?testlength=${localStorage.getItem('TestLength')}&testTopic=${localStorage.getItem("TestTopic")}`).then(response => response.json())
+const QuestionData = fetch(`/api/questions?testlength=${___testlength}&Topic=${___Topic}&subTopic=${___SubTopic}`).then(response => response.json())
 
 QuestionData.then((data) => {
     TotalQuestion = data.data.length
     data.data.forEach((question, index) => {
         correctAnswers.push(question.ans)
+        if (!AnswerSheet[question.topic]) {
+            AnswerSheet[question.topic] = []
+        }
         AnswerSheet[question.topic][`question${index + 1}`] = question.ans
         /* if (index + 1 <= TotalQuestion / 4) {
             AnswerSheet['Verbal'][`question${index + 1}`] = question.ans;
@@ -312,9 +344,10 @@ QuestionData.then((data) => {
 });
 
 const startTest = () => {
+    localStorage.removeItem('TestToken')
 
     submited = false
-    let totalSeconds =  Math.ceil((localStorage.getItem('TestLength') * 0.6) *60);
+    let totalSeconds = Math.ceil((___testlength * 0.6) * 60);
     const minutesSpan = document.querySelector('#minutes');
     const secondsSpan = document.querySelector('#seconds');
     const submitbtn = document.getElementById('submit')
@@ -329,7 +362,6 @@ const startTest = () => {
 
     submitbtn.addEventListener('click', function (e) {
         e.preventDefault();
-        localStorage.removeItem('TestLength')
         ResultDiv.style.display = 'block'
         clearInterval(x)
         minutesSpan.textContent = 0
@@ -353,6 +385,8 @@ accept_tac.addEventListener('click', () => {
 });
 
 window.onbeforeunload = function () {
+    localStorage.removeItem('TestToken')
+
     return "Are you  ure you want to leave this page?";
 };
 
@@ -368,7 +402,7 @@ window.addEventListener("blur", function () {
         img.setAttribute('title', 'image title');
 
         document.body.appendChild(img);
- 
+
         const sorrybtn = document.createElement('button')
         sorrybtn.id = 'sorrybtn';
         sorrybtn.textContent = 'Sorry!';
