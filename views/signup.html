@@ -3,6 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <style>
         * {
@@ -11,7 +13,7 @@
             box-sizing: border-box;
         }
 
-        .SignUp-page {
+        .signup-page {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -84,16 +86,17 @@
 </head>
 
 <body>
-    <div class="SignUp-page">
+    
+    <div class="signup-page">
         <div class="form">
             <a href="/"><img src="/logo.png" alt="Logo"></a>
-            <div class="SignUp-form">
+            <div class="signup-form">
                 <input id="name" type="text" placeholder="Name" />
                 <input id="username" type="text" placeholder="username" />
                 <input id="password" type="password" placeholder="password" />
                 <input id="repassword" type="password" placeholder="Re-password" />
                 <div class="error" id="error-message"></div>
-                <button onclick={SignUp()}>SignUp</button>
+                <button onclick={signup()}>Sign Up</button>
                 <p class="message">Already Have account? <a href="/login">login</a></p>
             </div>
         </div>
@@ -142,7 +145,7 @@
             errorMessage.textContent = ''
         }
 
-        function SignUp() {
+        function signup() {
 
             if (Name.value === "" || username.value === "" || password.value === "" || repassword.value === "") {
                 errorMessage.textContent = "Please fill out all fields.";

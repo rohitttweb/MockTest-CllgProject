@@ -1,54 +1,11 @@
-// Select The Elements
-var toggle_btn;
-var big_wrapper;
-var hamburger_menu;
+const toggleBtn = document.querySelector('.nav-toggle');
+const navMenu = document.querySelector('.nav-menu');
+const navContainer = document.querySelector('.nav-container');
 
-function declare() {
-    toggle_btn = document.querySelector(".toggle-btn");
-    big_wrapper = document.querySelector(".big-wrapper");
-    hamburger_menu = document.querySelector(".hamburger-menu");
-}
-
-const main = document.querySelector("main");
-
-declare();
-
-let dark = false;
-
-function toggleAnimation() {
-    // Clone the wrapper
-    dark = !dark;
-    let clone = big_wrapper.cloneNode(true);
-    if (dark) {
-        clone.classList.remove("light");
-        clone.classList.add("dark");
-    } else {
-        clone.classList.remove("dark");
-        clone.classList.add("light");
-    }
-    clone.classList.add("copy");
-    main.appendChild(clone);
-
-    document.body.classList.add("stop-scrolling");
-
-    clone.addEventListener("animationend", () => {
-        document.body.classList.remove("stop-scrolling");
-        big_wrapper.remove();
-        clone.classList.remove("copy");
-        // Reset Variables
-        declare();
-        events();
-    });
-}
-
-function events() {
-    toggle_btn.addEventListener("click", toggleAnimation);
-    hamburger_menu.addEventListener("click", () => {
-        big_wrapper.classList.toggle("active");
-    });
-}
-
-events();
+toggleBtn.addEventListener('click', () => {
+    navMenu.classList.toggle('nav-active');
+    navContainer.classList.toggle('nav-active');
+});
 
 
 function getUserToken() {
@@ -57,15 +14,50 @@ function getUserToken() {
         const cookie = cookies[i].split("=");
         if (cookie[0] === "UserToken") {
             const Token = cookie[1];
-            console.log("UserToken:", Token);
             return Token
         }
     }
     return false
 }
 const Token = getUserToken();
+
+
+
+
+
+
 const main_btn = document.querySelector('#main_btn')
-if(Token){
-    main_btn.innerHTML = 'Home Page'
+const topRightBtn = document.querySelector('#topRightBtn')
+const proof = document.querySelector('#proof')
+if (Token) {
+    fetch('/api/whoami', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${Token}`
+        }
+    }).then(response => response.json()).then((data) => {
+        proof.innerHTML = `Loged in as ${data.name}`
+    })
+    main_btn.innerHTML = 'Dashboard >>'
     main_btn.href = '/dashboard'
+    topRightBtn.innerHTML = "Log out"
+    topRightBtn.href = '/logout'
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener('scroll', function () {
+    navMenu.classList.remove('nav-active');
+    navContainer.classList.remove('nav-active');
+})

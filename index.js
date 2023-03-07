@@ -26,13 +26,16 @@ app.get('/pdf', function (req, res) {
 })
 
 app.get('/dashboard', function (req, res) {
-    res.sendFile('views/Home.html', { root: __dirname })
+    res.sendFile('views/dashboard.html', { root: __dirname })
 })
 app.get('/', function (req, res) {
     res.sendFile('views/index.html', { root: __dirname })
 })
 app.get('/signup', function (req, res) {
     res.sendFile('views/signup.html', { root: __dirname })
+})
+app.get('/logout', function (req, res) {
+    res.sendFile('views/logout.html', { root: __dirname })
 })
 
 

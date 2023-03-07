@@ -152,8 +152,3 @@ switchMode.addEventListener('change', function () {
 	}
 })
 
-const logoutBtn = document.querySelector('.logout')
-logoutBtn.addEventListener('click', function () {
-	document.cookie = "UserToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-	window.location.href = '/'
-})

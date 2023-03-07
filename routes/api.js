@@ -153,6 +153,7 @@ router.post('/isexist', function (req, res) {
     
 })
 function authToken(req, res, next) {
+    console.log(req.headers.authorization)
     //will return user from jwt token send with request
     const token = (req.headers.authorization).split(' ')[1]
     if (!token) return res.sendStatus(401)

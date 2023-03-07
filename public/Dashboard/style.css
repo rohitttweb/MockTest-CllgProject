@@ -253,10 +253,7 @@ body {
 	border-radius: 0 36px 36px 0;
 	cursor: pointer;
 }
-#content nav .notification {
-	font-size: 20px;
-	position: relative;
-}
+
 #content nav .notification .num {
 	position: absolute;
 	top: -6px;
@@ -398,7 +395,6 @@ body {
 }
 #content main .box-info li:hover {
 	background: var(--green);
-
 	
 }
 #content main .box-info li .bx {
