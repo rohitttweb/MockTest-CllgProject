@@ -7,45 +7,53 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
         <style>
+                body {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                }
+
                 #question-form {
-                        max-width: 600px;
-                        margin: 0 auto;
-                        text-align: left;
+                        max-width: 1000px;
+                        width: 100%;
                         padding: 20px;
-                }
 
-                p {
-                        font-size: 18px;
-                        margin-top: 20px;
-                }
-
-                input[type="text"] {
-                        width: 100%;
-                        padding: 10px;
-                        font-size: 16px;
-                        margin-top: 10px;
-                        margin-bottom: 20px;
-                        border: 1px solid lightgray;
-                        box-sizing: border-box;
-                }
-
-                button[type="submit"] {
-                        width: 100%;
-                        padding: 10px;
-                        font-size: 18px;
-                        background-color: grey;
-                        color: white;
-                        border: none;
-                        cursor: pointer;
-                        margin-top: 20px;
                 }
 
                 #question-area {
-                        max-width: 600px;
+                        width: 100%;
+                        height: 100px;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                        padding: 5px;
+                        resize: none;
+                }
+
+                label {
                         padding: 10px;
+                }
+
+                input[type="text"],
+                select {
+                        padding: 6px;
+                        margin-bottom: 10px;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                        box-sizing: border-box;
+                }
+
+                #Submit {
+                        background-color: #4CAF50;
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        padding: 6px 15px;
+                        cursor: pointer;
                         font-size: 16px;
+                }
 
-
+                #Submit:hover {
+                        background-color: #3e8e41;
                 }
 
                 #toast-container {
@@ -66,6 +74,14 @@
                         position: relative;
                         margin-bottom: 10px;
                 }
+
+                #addNewQuestion {
+                        margin: 0 auto;
+
+                }
+                a{
+                        text-decoration: none;
+                }
         </style>
 </head>
 
@@ -73,6 +89,10 @@
         <div id="toast-container"></div>
 
         <div id="question-form">
+                <h1>
+                        <span><a href="/dashboard"><<</a></span>
+                        Add Question:
+                </h1>
                 <p>Enter a question:</p>
                 <textarea id="question-area" name="question" required></textarea>
                 <br>
@@ -91,8 +111,7 @@
                 <br><br>
 
                 <label>Correct Answer</label>
-                <input placeholder="Correct Answer must be from above 4 options" id="correct_ans" type="text"
-                        name="correct_ans" required>
+                <input placeholder="Same as one of the option" id="correct_ans" type="text" name="correct_ans" required>
                 <br>
                 <br>
                 <label for="main-topic">Choose Category:</label><br><br>
@@ -110,36 +129,27 @@
                 <button id="Submit" type="submit">Submit</button>
         </div>
         <script>
+                if (!localStorage.getItem('admin')) {
+                        window.location.href = '/dashboard'
+                }
+
                 const subTopics = {
                         0: [],
                         aptitude: [
-                                "Averages",
-                                "Percentages",
+                                "Average", //final
+                                "Percentage", //final
                                 "Profit and Loss",
                                 "Ratios and Proportions",
-                                "Simple Interest and Compound Interest",
+                                "Simple Interest",
+                                "Compound Interest",
                                 "Time and Work",
                                 "Time and Speed",
-
                         ],
+                        reasoning: [],
+                        general_awareness: [],
                         verbal: [
-                                "Spotting Errors",
-                                "Synonym Antonyms",
-                                "Vocabulary"
-                        ],
-                        reasoning: [
-                                "Dice",
-                                "Direction Sense Test",
-                                "Blood Relations",
-                                "Coding-Decoding",
-                                "Alphabet Test"
-                        ],
-                        general_awareness: [
-                                "Basic",
-                                "History",
-                                "Geography",
-                                "Science",
-                                "Economics"
+                                "Synonym",
+                                "Antonyms"
                         ]
                 };
                 const mainTopic = document.getElementById("main-topic");
@@ -225,7 +235,8 @@
                                 const form = document.getElementById('question-form')
                                 form.style.display = 'none'
                                 var button = document.createElement("button");
-                                button.innerHTML = "Click me";
+                                button.id = 'addNewQuestion'
+                                button.innerHTML = "Add New Question";
 
                                 // Add an event listener for the button click
                                 button.addEventListener("click", function () {
@@ -240,7 +251,7 @@
                                 console.error('Error:', error);
                         });
                 });
-                
+
         </script>
 </body>
 

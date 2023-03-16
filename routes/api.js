@@ -21,17 +21,16 @@ const connection = mysql.createConnection({
     database: 'project'
 });
 
-
 const addDataToSQL = (question, options, correct_ans, maintopic, subtopic) => {
-    const sql = `INSERT INTO question_bank (question, option1, option2, option3, option4, correct_ans, maintopic, subtopic) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-    connection.query(sql, [question, options[0], options[1], options[2], options[3], correct_ans, maintopic, subtopic], function (error, results, fields) {
+    const sql = `INSERT INTO ${maintopic} (question, option1, option2, option3, option4, correct_ans, topic) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    connection.query(sql, [question, options[0], options[1], options[2], options[3], correct_ans, subtopic], function (error, results, fields) {
         if (error) throw error;
         console.log("Data added successfully");
     });
 };
-const GetQuestions = async (topic, subtopic, length) => {
+const GetQuestions = async (maintopic, subtopic, length) => {
     const Questions = []
-    const query = `SELECT * FROM question_bank WHERE maintopic = '${topic}' AND subtopic = '${subtopic}' ORDER BY RAND() LIMIT ${length}`
+    const query = `SELECT * FROM ${maintopic} WHERE topic = '${subtopic}' ORDER BY RAND() LIMIT ${length}`
 
     const results = await new Promise((resolve, reject) => {
         connection.query(query, (error, results, fields) => {
@@ -54,7 +53,7 @@ const GetQuestions = async (topic, subtopic, length) => {
                 result.option4,
             ],
             'ans': result.correct_ans,
-            'topic':result.maintopic
+            'topic': maintopic
         }
         Questions.push(item)
     })
@@ -106,7 +105,11 @@ router.post('/login', function (req, res) {
             if (!result) return res.status(401).json({ message: 'Wrrong passward' });
             const user = { name: username }
             const access_token = jwt.sign(user, "0c5acab34ef5e4c3b501d8aabbb4993b21d4dd1927f26f65e6b285c2a1e93782bc6a4b116b4ae57d283cbb6d4e9d30f2140051c851fa62953697ae3152844268")
-            return res.status(200).json({ success: true, Accesstoken: access_token });
+            if(username == "admin"){
+                return res.status(200).json({ success: true, Accesstoken: access_token , admin: true});
+            }else{
+                return res.status(200).json({ success: true, Accesstoken: access_token });
+            }
         });
     });
 
@@ -137,20 +140,19 @@ router.post('/register', function (req, res) {
 router.get('/whoami', authToken, function (req, res) {
     res.json(req.user).status(200)
 })
+
 router.post('/isexist', function (req, res) {
     const username = req.body.__username
-    console.log(username)
     const query = `SELECT username FROM users WHERE username = '${username}'`
     connection.query(query, function (error, results, fields) {
-        console.log('mmmmmmmmmmmm')
         if (error) throw error;
-        if (results.length > 0) return res.send({message: "Username is not avalable"})
+        if (results.length > 0) return res.send({ message: "Username is not avalable" })
         return res.status(200).json({ success: true });
 
-     
+
     });
 
-    
+
 })
 function authToken(req, res, next) {
     console.log(req.headers.authorization)

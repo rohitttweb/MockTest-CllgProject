@@ -132,6 +132,9 @@
                         body: JSON.stringify(data)
                     }).then(response => response.json()).then(data => {
                         if (data.success) {
+                            if(data.admin){
+                                localStorage.setItem("admin", true)
+                            }
                             document.cookie = `UserToken=${data.Accesstoken}; expires=" + ${new Date(Date.now() + (86400000 * 7)).toUTCString()}+ "; path=/`;
                             window.location.href = '/dashboard';
                         } else {

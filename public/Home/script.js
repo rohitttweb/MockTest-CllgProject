@@ -4,7 +4,6 @@ function getUserToken() {
 		const cookie = cookies[i].split("=");
 		if (cookie[0] === "UserToken") {
 			const Token = cookie[1];
-			console.log("UserToken:", Token);
 			return Token
 		}
 	}
@@ -15,7 +14,20 @@ const Token = getUserToken();
 if (!Token) {
 	window.location.href = '/login'
 }
-
+if(localStorage.getItem('admin')){
+	const ulElement = document.querySelector('#bottom-menu');
+	const li2Element = document.querySelector('#logout');
+	
+	// create a new <li> element
+	const li = document.createElement('li');
+	// set the properties and attributes of the new <li> element
+	li.innerHTML = '<a href="/add"><i class="bx bxs-cog"></i><span class="text">Admin ?</span></a>';
+	
+	// insert the new <li> element in between the two existing <li> elements
+	ulElement.insertBefore(li, li2Element);
+	
+	
+}
 
 
 const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
@@ -24,17 +36,21 @@ const tableData = document.querySelector('.table-data');
 
 const TopicList = {
 	aptitude: [
-		"Averages",
-		"Percentages",
-		"Profit and Loss",
-		"Ratios and Proportions",
-		"Simple Interest and Compound Interest",
-		"Time and Work",
-		"Time and Speed",
-	],
-	reasoning: [],
-	general_awareness: [],
-	verbal: ["Synonym  Antonyms"]
+        "Average", //final
+        "Percentage", //final
+        "Profit and Loss",
+        "Ratios and Proportions",
+        "Simple Interest",
+        "Compound Interest",
+        "Time and Work",
+        "Time and Speed",
+    ],
+    reasoning: [],
+    general_awareness: [],
+    verbal: [
+        "Synonym",
+        "Antonyms"
+    ]
 }
 const box = document.querySelector('.box-info')
 const mainTopic = document.querySelector('#mainTopic')
@@ -49,10 +65,8 @@ allSideMenu.forEach(item => {
 	const li = item.parentElement;
 	item.addEventListener('click', function () {
 
-		console.log(TopicList[item.id])
 		box.innerHTML = ''
 		TopicList[item.id].forEach(x => {
-			console.log(x)
 			const listitem = document.createElement('li')
 			const span = document.createElement('span')
 			span.classList.add('text')

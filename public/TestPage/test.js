@@ -11,39 +11,62 @@ function getUserToken() {
     return false
 }
 const Token = getUserToken();
-
-if (!Token) {
-    window.location.href = "/login"
-}
-if (!localStorage.getItem('TestToken')) {
-    window.location.href = '/dashboard'
-}
 const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop),
 });
-// Get the value of "some_key" in eg "https://example.com/?some_key=some_value"
-let ___Topic = params.Topic; // "some_value"
-let ___SubTopic = params.subTopic; // "some_value"
-let ___testlength = params.testlength; // "some_value"
+
+let ___Topic = params.Topic; 
+let ___SubTopic = params.subTopic; 
+let ___testlength = params.testlength;
 const ListOfTpoics = {
     aptitude: [
-        "Averages",
-        "Percentages",
+        "Average", //final
+        "Percentage", //final
         "Profit and Loss",
         "Ratios and Proportions",
-        "Simple Interest and Compound Interest",
+        "Simple Interest",
+        "Compound Interest",
         "Time and Work",
         "Time and Speed",
     ],
     reasoning: [],
     general_awareness: [],
-    verbal: ["Synonym  Antonyms"]
+    verbal: [
+        "Synonym",
+        "Antonyms"
+    ]
 }
-if (!ListOfTpoics.hasOwnProperty(___Topic) || !ListOfTpoics[___Topic].includes(___SubTopic) || ___testlength <= 0) {
-    window.location.href = '/dashboard'
+function checks(){
+    if (!Token) {
+        window.location.href = "/login"
+    }
+    if (!localStorage.getItem('TestToken')) {
+        window.location.href = '/dashboard'
+    }
+    if (!ListOfTpoics.hasOwnProperty(___Topic) || !ListOfTpoics[___Topic].includes(___SubTopic) || ___testlength <= 0) {
+        window.location.href = '/dashboard'
+    }
+
 }
+checks();
 
 let correctAnswers = []
+const AnswerSheet = {}
+const answers = {};
+let currentQuestion = 0;
+let TotalQuestion = 0;
+let submited = true
+
+const questionsContainer = document.querySelector('#questions');
+
+const ResultDiv = document.getElementById('results')
+ResultDiv.style.display = 'none'
+const timer = document.getElementById('timer')
+timer.style.display = 'none'
+const testlength = document.getElementById('testlength')
+testlength.innerHTML = `Test Length: ${___testlength}`
+
+const QuestionData = fetch(`/api/questions?testlength=${___testlength}&Topic=${___Topic}&subTopic=${___SubTopic}`).then(response => response.json())
 
 function printBoth(questionsDiv, resultDiv) {
     const questions = document.getElementsByClassName('question');
@@ -133,15 +156,6 @@ function printBoth(questionsDiv, resultDiv) {
     }
 }
 
-const AnswerSheet = {
-
-}
-let submited = true
-const timer = document.getElementById('timer')
-timer.style.display = 'none'
-const ResultDiv = document.getElementById('results')
-ResultDiv.style.display = 'none'
-
 function startCountdown(totalSeconds, minutesSpan, secondsSpan, btn) {
     const countDown = () => {
         const minutes = Math.floor(totalSeconds / 60);
@@ -160,11 +174,6 @@ function startCountdown(totalSeconds, minutesSpan, secondsSpan, btn) {
 
 }
 
-const questionsContainer = document.querySelector('#questions');
-let currentQuestion = 0;
-let TotalQuestion = 0;
-
-const answers = {};
 function displayResult() {
     const inputs = document.querySelectorAll('input[type="radio"]:checked');
     for (const input of inputs) {
@@ -233,7 +242,7 @@ const createQuestion = (question, index, TotalQuestion) => {
         optionInput.value = option
 
         const optionLabel = document.createElement('label');
-        optionLabel.textContent = option;
+        optionLabel.innerHTML = option;
 
         box.appendChild(optionInput)
         box.appendChild(optionLabel)
@@ -303,12 +312,6 @@ const createJumpSelect = () => {
 }
 
 
-const testlength = document.getElementById('testlength')
-testlength.innerHTML = `Test Length: ${___testlength}`
-
-
-const QuestionData = fetch(`/api/questions?testlength=${___testlength}&Topic=${___Topic}&subTopic=${___SubTopic}`).then(response => response.json())
-
 QuestionData.then((data) => {
     TotalQuestion = data.data.length
     data.data.forEach((question, index) => {
@@ -317,19 +320,6 @@ QuestionData.then((data) => {
             AnswerSheet[question.topic] = []
         }
         AnswerSheet[question.topic][`question${index + 1}`] = question.ans
-        /* if (index + 1 <= TotalQuestion / 4) {
-            AnswerSheet['Verbal'][`question${index + 1}`] = question.ans;
-
-        } else if (index + 1 > TotalQuestion / 4 && index + 1 <= ((TotalQuestion / 4) * 2)) {
-            AnswerSheet['GeneralAwareness'][`question${index + 1}`] = question.ans;
-
-        } else if (index + 1 > ((TotalQuestion / 4) * 2) && index + 1 <= ((TotalQuestion / 4) * 3)) {
-            AnswerSheet['Aptitude'][`question${index + 1}`] = question.ans;
-
-        } else {
-            AnswerSheet['Reasoning'][`question${index + 1}`] = question.ans;
-
-        } */
         const questionDiv = createQuestion(question, index, TotalQuestion)
         questionsContainer.appendChild(questionDiv);
     });
@@ -366,7 +356,6 @@ const startTest = () => {
         clearInterval(x)
         minutesSpan.textContent = 0
         secondsSpan.textContent = 0
-
         questionsContainer.children[currentQuestion].classList.remove('active');
         submited = true
         displayResult()

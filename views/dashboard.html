@@ -7,7 +7,7 @@
 	<!-- Boxicons -->
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<!-- My CSS -->
-	<link rel="stylesheet" href="/Dashboard/style.css">
+	<link rel="stylesheet" href="/Home/style.css">
 
 	<title>Dashboard</title>
 </head>
@@ -47,15 +47,15 @@
 			</li>
 			
 		</ul>
-		<ul class="side-menu">
+		<ul id="bottom-menu" class="side-menu bottom">
 			<li id="recentTest">
 				<a>
 					<i class='bx bxs-cog' ></i>
 					<span class="text">Recent Tests</span>
 				</a>
 			</li>
-			
-			<li>
+			<!-- new li through js -->
+			<li id="logout">
 				<a class="logout" href="/logout">
 					<i class='bx bxs-log-out-circle' ></i>
 					<span class="text">Logout</span>
@@ -188,6 +188,6 @@
 	<!-- CONTENT -->
 	
 
-	<script src="/Dashboard/script.js"></script>
+	<script src="/Home/script.js"></script>
 </body>
 </html>
