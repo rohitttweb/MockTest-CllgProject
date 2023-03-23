@@ -57,3 +57,30 @@ const Questionss =
             'ans': 'The Great Gatsby'
         }
     ]
+
+
+
+Aptitude
+    Average 
+    Percentage
+    Profit and Loss
+    Ratios and Proportions
+    Simple Interest
+    Time and Work
+Reasoning
+
+GeneralAwareness
+
+Verbal
+
+
+
+
+Ratios and Proportions ---- 30 pdf
+Simple Interest ---- 20 pdf
+Time and Work ---- 25 pdf
+
+
+Coding Decoding ---- 20 pdf
+Direction and Distance -----20 pdf
+

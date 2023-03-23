@@ -86,7 +86,7 @@
             <div class="login-form">
                 <input id="username" type="text" placeholder="Username" />
                 <input id="password" type="password" placeholder="Password" />
-                <div class="msg"></div>
+                <div id="error-message"></div>
                 <button onclick={login()}>Login</button>
                 <p class="message">Don't Have account? <a href="/signup">Sign Up</a></p>
             </div>
@@ -138,8 +138,9 @@
                             document.cookie = `UserToken=${data.Accesstoken}; expires=" + ${new Date(Date.now() + (86400000 * 7)).toUTCString()}+ "; path=/`;
                             window.location.href = '/dashboard';
                         } else {
+                            console.log(data.message)
                             const errorMessage = document.getElementById('error-message');
-                            errorMessage.textContent = data.message;
+                            errorMessage.innerText = data.message;
                         }
                     })
                         .catch(error => {

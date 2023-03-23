@@ -11,7 +11,7 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
 
-
+const secret = "0c5acab34ef5e4c3b501d8aabbb4993b21d4dd1927f26f65e6b285c2a1e93782bc6a4b116b4ae57d283cbb6d4e9d30f2140051c851fa62953697ae3152844268"
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
@@ -98,13 +98,13 @@ router.post('/login', function (req, res) {
     const query = `SELECT * FROM users WHERE username = '${username}'`
     connection.query(query, function (error, results, fields) {
         if (error) throw error;
-        if (results.length <= 0) return res.send('User Not Found')
+        if (results.length <= 0) return res.send({ success: false, message: 'user not found' })
         console.log(results)
         bcrypt.compare(password, results[0].password, function (err, result) {
             if (err) return res.sendStatus(500)
-            if (!result) return res.status(401).json({ message: 'Wrrong passward' });
+            if (!result) return res.status(401).json({ success: false, message: 'Wrong password' });
             const user = { name: username }
-            const access_token = jwt.sign(user, "0c5acab34ef5e4c3b501d8aabbb4993b21d4dd1927f26f65e6b285c2a1e93782bc6a4b116b4ae57d283cbb6d4e9d30f2140051c851fa62953697ae3152844268")
+            const access_token = jwt.sign(user, secret)
             if(username == "admin"){
                 return res.status(200).json({ success: true, Accesstoken: access_token , admin: true});
             }else{
@@ -159,7 +159,7 @@ function authToken(req, res, next) {
     //will return user from jwt token send with request
     const token = (req.headers.authorization).split(' ')[1]
     if (!token) return res.sendStatus(401)
-    jwt.verify(token, "0c5acab34ef5e4c3b501d8aabbb4993b21d4dd1927f26f65e6b285c2a1e93782bc6a4b116b4ae57d283cbb6d4e9d30f2140051c851fa62953697ae3152844268", (err, user) => {
+    jwt.verify(token, secret, (err, user) => {
         if (err) return res.sendStatus(403)
         req.user = user // now req will have new object user 
         next()

@@ -56,41 +56,32 @@
                         background-color: #3e8e41;
                 }
 
-                #toast-container {
-                        position: fixed;
-                        top: 10px;
-                        right: 10px;
-                        width: 300px;
-                        z-index: 1;
-                }
 
-                .toast {
-                        background-color: #333;
-                        color: #fff;
-                        font-size: 14px;
-                        padding: 10px;
-                        border-radius: 5px;
-                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-                        position: relative;
-                        margin-bottom: 10px;
-                }
 
                 #addNewQuestion {
-                        margin: 0 auto;
+                        margin: auto auto;
+                        background-color: #4CAF50;
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        padding: 6px 15px;
+                        cursor: pointer;
+                        font-size: 16px;
 
                 }
-                a{
+
+                a {
                         text-decoration: none;
                 }
         </style>
 </head>
 
 <body>
-        <div id="toast-container"></div>
 
         <div id="question-form">
                 <h1>
-                        <span><a href="/dashboard"><<</a></span>
+                        <span><a href="/dashboard">
+                                        <<</a></span>
                         Add Question:
                 </h1>
                 <p>Enter a question:</p>
@@ -138,18 +129,20 @@
                         aptitude: [
                                 "Average", //final
                                 "Percentage", //final
-                                "Profit and Loss",
-                                "Ratios and Proportions",
-                                "Simple Interest",
+                                "Profit and Loss", //final
+                                "Ratios and Proportions", //final
+                                "Simple Interest", //final
                                 "Compound Interest",
-                                "Time and Work",
+                                "Time and Work", //final
                                 "Time and Speed",
                         ],
-                        reasoning: [],
+                        reasoning: [
+                                "Coding Decoding",
+                                "Direction and Distance",
+                        ],
                         general_awareness: [],
                         verbal: [
-                                "Synonym",
-                                "Antonyms"
+
                         ]
                 };
                 const mainTopic = document.getElementById("main-topic");
@@ -168,17 +161,6 @@
                         }
                 });
 
-                function showToast(message, duration) {
-                        var toast = document.createElement("div");
-                        toast.classList.add("toast");
-                        toast.innerHTML = message;
-
-                        document.getElementById("toast-container").appendChild(toast);
-
-                        setTimeout(function () {
-                                toast.remove();
-                        }, duration);
-                }
 
 
                 function formatString(str) {
@@ -221,7 +203,6 @@
                                 })
                         }).then(response => response.json()).then(data => {
                                 console.log(data);
-                                showToast("Question Added", 5000);
                                 Question.value = ''
                                 option1.value = ''
                                 option2.value = ''

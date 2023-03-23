@@ -22,14 +22,18 @@ const ListOfTpoics = {
     aptitude: [
         "Average", //final
         "Percentage", //final
-        "Profit and Loss",
-        "Ratios and Proportions",
-        "Simple Interest",
+        "Profit and Loss", //final
+        "Ratios and Proportions", // final
+        "Simple Interest", //final
         "Compound Interest",
-        "Time and Work",
+        "Time and Work", //final
         "Time and Speed",
     ],
-    reasoning: [],
+    reasoning: [
+        "Coding Decoding",
+        "Direction and Distance",
+
+    ],
     general_awareness: [],
     verbal: [
         "Synonym",
