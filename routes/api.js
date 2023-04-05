@@ -67,17 +67,11 @@ router.get('/questions', async function (req, res) {
     const testTopic = (req.query.Topic)
     const testSubTopic = (req.query.subTopic)
     const testlength = Number(req.query.testlength)
-    console.log(req.query)
     if (!testlength) {
         return
     }
     let questions = await GetQuestions(testTopic, testSubTopic, testlength)
-    console.log(questions)
-    /* let verbal = await GetQuestions(testlength / 4, 'verbal');
-    let GeneralAwareness = await GetQuestions(testlength / 4, 'general_awareness');
-    let Aptitude = await GetQuestions(testlength / 4, 'aptitude');
-    let Reasoning = await GetQuestions(testlength / 4, 'reasoning');
-    const Questionsss = verbal.concat(GeneralAwareness, Aptitude, Reasoning) */
+    
     res.send({
         'code': 200,
         'success': 'Data fetched successfully',
@@ -148,11 +142,7 @@ router.post('/isexist', function (req, res) {
         if (error) throw error;
         if (results.length > 0) return res.send({ message: "Username is not avalable" })
         return res.status(200).json({ success: true });
-
-
     });
-
-
 })
 function authToken(req, res, next) {
     console.log(req.headers.authorization)
