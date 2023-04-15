@@ -1,20 +1,34 @@
-Project Name
-A brief description of the project.
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Project Name</title>
+  </head>
+  <body>
+    <h1>Project Name</h1>
+    <p>A brief description of the project.</p>
+    <h2>Installation</h2>
+<ol>
+  <li>Clone the repository.</li>
+  <li>Install dependencies: <code>npm install</code></li>
+  <li>Start the development server: <code>npm start</code></li>
+  <li>Open <a href="http://localhost:3000">http://localhost:3000</a> to view it in the browser.</li>
+</ol>
 
-Installation
-Clone the repository.
-Install dependencies: npm install
-Start the development server: npm start
-Open http://localhost:3000 to view it in the browser.
-Usage
-Instructions on how to use the project, including any prerequisites, commands, and examples.
+<h2>Usage</h2>
+<p>Instructions on how to use the project, including any prerequisites, commands, and examples.</p>
 
-Contributing
-Instructions on how to contribute to the project and guidelines for pull requests.
+<h2>Contributing</h2>
+<p>Instructions on how to contribute to the project and guidelines for pull requests.</p>
 
-Credits
-List of any external libraries, resources, or contributors to the project.
+<h2>Credits</h2>
+<p>List of any external libraries, resources, or contributors to the project.</p>
 
-License
-The license under which the project is distributed.
+<h2>License</h2>
+<p>The license under which the project is distributed.</p>
 
+<hr>
+
+<p>Feel free to customize the sections and information to fit your specific project. You should include information about how to install and start the project, as well as any usage instructions and guidelines for contributing. Make sure to also include any external libraries or resources used, as well as the license under which the project is distributed.</p>
+  </body>
+</html> 
