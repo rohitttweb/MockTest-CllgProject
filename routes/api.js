@@ -25,7 +25,6 @@ const addDataToSQL = (question, options, correct_ans, maintopic, subtopic) => {
     const sql = `INSERT INTO ${maintopic} (question, option1, option2, option3, option4, correct_ans, topic) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     connection.query(sql, [question, options[0], options[1], options[2], options[3], correct_ans, subtopic], function (error, results, fields) {
         if (error) throw error;
-        console.log("Data added successfully");
     });
 };
 const GetQuestions = async (maintopic, subtopic, length) => {
@@ -79,21 +78,18 @@ router.get('/questions', async function (req, res) {
     })
 })
 router.post('/add', function (req, res) {
-    console.log(req.body)
     const { question, options, correct_ans, mainTopic, subTopic } = req.body
     addDataToSQL(question, options, correct_ans, mainTopic, subTopic)
     res.status(200).json({ status: 'success' });
 })
 
 router.post('/login', function (req, res) {
-    console.log(req.body)
     const username = req.body.username
     const password = req.body.password
     const query = `SELECT * FROM users WHERE username = '${username}'`
     connection.query(query, function (error, results, fields) {
         if (error) throw error;
         if (results.length <= 0) return res.send({ success: false, message: 'user not found' })
-        console.log(results)
         bcrypt.compare(password, results[0].password, function (err, result) {
             if (err) return res.sendStatus(500)
             if (!result) return res.status(401).json({ success: false, message: 'Wrong password' });
@@ -112,7 +108,6 @@ router.post('/register', function (req, res) {
     const name = req.body.name
     const username = req.body.username
     const password = req.body.password
-    console.log(req.body)
     if (username.length < 5) return res.send("Username should be Greater then 5 letters")
     if (password.length < 8) return res.send("Password should be Greater then 8 letters")
     const query = `SELECT username FROM users WHERE username = '${username}'`
@@ -125,7 +120,6 @@ router.post('/register', function (req, res) {
             const sql = `INSERT INTO users (username, password, name) VALUES (?, ?, ?)`;
             connection.query(sql, [username, hash, name], function (error, results, fields) {
                 if (error) throw error;
-                console.log("user added successfully");
             });
             return res.status(200).json({ success: true });
         });
@@ -145,7 +139,6 @@ router.post('/isexist', function (req, res) {
     });
 })
 function authToken(req, res, next) {
-    console.log(req.headers.authorization)
     //will return user from jwt token send with request
     const token = (req.headers.authorization).split(' ')[1]
     if (!token) return res.sendStatus(401)

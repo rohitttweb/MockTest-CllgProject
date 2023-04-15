@@ -14,19 +14,19 @@ const Token = getUserToken();
 if (!Token) {
 	window.location.href = '/login'
 }
-if(localStorage.getItem('admin')){
+if (localStorage.getItem('admin')) {
 	const ulElement = document.querySelector('#bottom-menu');
 	const li2Element = document.querySelector('#logout');
-	
+
 	// create a new <li> element
 	const li = document.createElement('li');
 	// set the properties and attributes of the new <li> element
 	li.innerHTML = '<a href="/add"><i class="bx bxs-cog"></i><span class="text">Admin ?</span></a>';
-	
+
 	// insert the new <li> element in between the two existing <li> elements
 	ulElement.insertBefore(li, li2Element);
-	
-	
+
+
 }
 
 
@@ -34,25 +34,45 @@ const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
 
 const TopicList = {
 	aptitude: [
-        "Average", //final
-        "Percentage", //final
-        "Profit and Loss", //final
-        "Ratios and Proportions", //final
-        "Simple Interest", //final
-        "Compound Interest",
-        "Time and Work", // final
-        "Time and Speed",
-    ],
-    reasoning: [
-		"Coding Decoding",
-		"Direction and Distance",
+		"Average", //final
+		"Percentage", //final
+		"Profit and Loss", //final
+		"Ratios and Proportions", //final
+		"Simple Interest", //final
+		"Compound Interest",
+		"Time and Work", // final
+		"Time and Speed",
+	],
+	reasoning: [
+		"Coding Decoding",//final
+		"Direction and Distance",//final
+		"Number and Letter Series",
+		"Ranking and Arrangements",
+		"Syllogism"
 
 	],
-    general_awareness: [],
-    verbal: [
-        "Synonym",
-        "Antonyms"
-    ]
+	general_awareness: [
+		"History",
+		"Geography",
+		"Indian Polity and Constitution",
+		"Indian Economy and Budget",
+		"Science and Technology",
+		"Sports and Games",
+		"Awards and Honours",
+		"Books and Authors",
+		"Important Days and Dates",
+		"Art and Culture"
+	],
+	verbal: [
+		"Synonym and Antonyms",
+		"Grammar and sentence structure",
+		"Idioms and phrases",
+		"Vocabulary",
+		"Reading comprehension",
+		"Error detection and correction",
+		"Analogies",
+		"Sentence completion",
+	]
 }
 const box = document.querySelector('.box-info')
 const mainTopic = document.querySelector('#mainTopic')

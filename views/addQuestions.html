@@ -7,6 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
         <style>
+                @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+* {
+    font-size: 100%;
+    font-family: 'Ubuntu', sans-serif;
+}
                 body {
                         display: flex;
                         justify-content: center;
@@ -81,7 +86,7 @@
         <div id="question-form">
                 <h1>
                         <span><a href="/dashboard">
-                                        <<</a></span>
+                                        << </a></span>
                         Add Question:
                 </h1>
                 <p>Enter a question:</p>
@@ -137,11 +142,34 @@
                                 "Time and Speed",
                         ],
                         reasoning: [
-                                "Coding Decoding",
-                                "Direction and Distance",
+                                "Coding Decoding", //final
+                                "Direction and Distance", //final
+                                "Number and Letter Series",
+                                "Ranking and Arrangements",
+                                "Syllogism"
                         ],
-                        general_awareness: [],
+                        general_awareness: [
+                                "History",
+                                "Geography",
+                                "Indian Polity and Constitution",
+                                "Indian Economy and Budget",
+                                "Science and Technology",
+                                "Sports and Games",
+                                "Awards and Honours",
+                                "Books and Authors",
+                                "Important Days and Dates",
+                                "Art and Culture"
+
+                        ],
                         verbal: [
+                                "Synonym and Antonyms",
+                                "Grammar and sentence structure",
+                                "Idioms and phrases",
+                                "Vocabulary",
+                                "Reading comprehension",
+                                "Error detection and correction",
+                                "Analogies",
+                                "Sentence completion",
 
                         ]
                 };
@@ -151,7 +179,6 @@
                 mainTopic.addEventListener("change", function () {
                         const selectedValue = this.value;
                         const SelectOptions = subTopics[selectedValue];
-                        console.log(SelectOptions)
                         subTopic.innerHTML = "";
                         for (let i = 0; i < SelectOptions.length; i++) {
                                 const option = document.createElement("option");
@@ -201,8 +228,7 @@
                                         mainTopic: mainTopic.value,
                                         subTopic: subTopic.value
                                 })
-                        }).then(response => response.json()).then(data => {
-                                console.log(data);
+                        }).then(response => response.json()).then(data => { //process data send from sever})
                                 Question.value = ''
                                 option1.value = ''
                                 option2.value = ''

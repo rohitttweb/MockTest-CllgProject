@@ -4,7 +4,6 @@ function getUserToken() {
         const cookie = cookies[i].split("=");
         if (cookie[0] === "UserToken") {
             const Token = cookie[1];
-            console.log("UserToken:", Token);
             return Token
         }
     }
@@ -15,8 +14,8 @@ const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop),
 });
 
-let ___Topic = params.Topic; 
-let ___SubTopic = params.subTopic; 
+let ___Topic = params.Topic;
+let ___SubTopic = params.subTopic;
 let ___testlength = params.testlength;
 const ListOfTpoics = {
     aptitude: [
@@ -30,17 +29,37 @@ const ListOfTpoics = {
         "Time and Speed",
     ],
     reasoning: [
-        "Coding Decoding",
-        "Direction and Distance",
+        "Coding Decoding",//final
+        "Direction and Distance",//final
+        "Number and Letter Series",
+        "Ranking and Arrangements",
+        "Syllogism"
 
     ],
-    general_awareness: [],
+    general_awareness: [
+        "History",
+        "Geography",
+        "Indian Polity and Constitution",
+        "Indian Economy and Budget",
+        "Science and Technology",
+        "Sports and Games",
+        "Awards and Honours",
+        "Books and Authors",
+        "Important Days and Dates",
+        "Art and Culture"
+    ],
     verbal: [
-        "Synonym",
-        "Antonyms"
+        "Synonym and Antonyms",
+        "Grammar and sentence structure",
+        "Idioms and phrases",
+        "Vocabulary",
+        "Reading comprehension",
+        "Error detection and correction",
+        "Analogies",
+        "Sentence completion",
     ]
 }
-function checks(){
+function checks() {
     if (!Token) {
         window.location.href = "/login"
     }

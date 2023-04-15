@@ -7,7 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+
         * {
+            font-size: 100%;
+            font-family: 'Ubuntu', sans-serif;
+       
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -100,7 +105,6 @@
                 const cookie = cookies[i].split("=");
                 if (cookie[0] === "UserToken") {
                     const Token = cookie[1];
-                    console.log("UserToken:", Token);
                     return Token
                 }
             }
@@ -124,29 +128,28 @@
                     password: password
                 };
 
-                    fetch('/api/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    }).then(response => response.json()).then(data => {
-                        if (data.success) {
-                            if(data.admin){
-                                localStorage.setItem("admin", true)
-                            }
-                            document.cookie = `UserToken=${data.Accesstoken}; expires=" + ${new Date(Date.now() + (86400000 * 7)).toUTCString()}+ "; path=/`;
-                            window.location.href = '/dashboard';
-                        } else {
-                            console.log(data.message)
-                            const errorMessage = document.getElementById('error-message');
-                            errorMessage.innerText = data.message;
+                fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => response.json()).then(data => {
+                    if (data.success) {
+                        if (data.admin) {
+                            localStorage.setItem("admin", true)
                         }
-                    })
-                        .catch(error => {
-                            // handle any errors that occur during the fetch request
-                            console.error('Error:', error);
-                        });
+                        document.cookie = `UserToken=${data.Accesstoken}; expires=" + ${new Date(Date.now() + (86400000 * 7)).toUTCString()}+ "; path=/`;
+                        window.location.href = '/dashboard';
+                    } else {
+                        const errorMessage = document.getElementById('error-message');
+                        errorMessage.innerText = data.message;
+                    }
+                })
+                    .catch(error => {
+                        // handle any errors that occur during the fetch request
+                        console.error('Error:', error);
+                    });
             }
         }
 

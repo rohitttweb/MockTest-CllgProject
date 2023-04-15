@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+* {
+    font-size: 100%;
+    font-family: 'Ubuntu', sans-serif;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -15,7 +21,7 @@ nav {
     color: #fff;
     display: flex;
     justify-content: center;
-    
+
 }
 
 .nav-container {
@@ -24,7 +30,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    
+
 }
 
 .nav-logo {
@@ -64,16 +70,18 @@ nav {
     color: green;
 
 }
-#topRightBtn{
 
-        text-decoration: none;
-        background-color: rgb(15, 149, 15);
-        color: #fff;
-        font-size: 16px;
-        padding: 10px 15px;
-        border-radius: 10px;
-    
+#topRightBtn {
+
+    text-decoration: none;
+    background-color: rgb(15, 149, 15);
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 15px;
+    border-radius: 10px;
+
 }
+
 .nav-toggle {
     display: none;
     background-color: transparent;
@@ -169,8 +177,8 @@ nav {
         margin-top: 10px;
         margin-bottom: 30px;
     }
-   
-    #topRightBtn{
+
+    #topRightBtn {
         font-size: 14px;
     }
 }
