@@ -18,7 +18,7 @@ const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'project'
+    database: 'onlinemocktestv1'
 });
 
 const addDataToSQL = (question, options, correct_ans, maintopic, subtopic) => {

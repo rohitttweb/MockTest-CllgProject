@@ -22,7 +22,6 @@ app.get('/dashboard', function (req, res) {
     res.sendFile('views/dashboard.html', { root: __dirname })
 })
 app.get('/test', function (req, res) {
-    console.log(req.query)
     res.sendFile('views/test.html', { root: __dirname })
 })
 app.get('/add', function (req, res) {

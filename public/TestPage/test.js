@@ -90,7 +90,9 @@ const testlength = document.getElementById('testlength')
 testlength.innerHTML = `Test Length: ${___testlength}`
 
 const QuestionData = fetch(`/api/questions?testlength=${___testlength}&Topic=${___Topic}&subTopic=${___SubTopic}`).then(response => response.json())
-
+function GoBack(){
+    window.location = '/dashboard'
+}
 function printBoth(questionsDiv, resultDiv) {
     const questions = document.getElementsByClassName('question');
 
@@ -142,6 +144,8 @@ function printBoth(questionsDiv, resultDiv) {
 
     const printtemp = document.getElementById('print')
     printtemp.style.display = 'none'
+    const GoBack = document.getElementById('GoBack')
+    GoBack.style.display = 'none'
 
     const printContents1 = document.getElementById(questionsDiv);
     const printContents2 = document.getElementById(resultDiv);
